@@ -14,6 +14,7 @@ def test_config_create(monkeypatch):
         HOMEPATH /
         'vw/data/ATE-Status_Berichtsversion.xlsx',
     )
+
 def test_config_open(monkeypatch):
     clean("test/data/config.yml")
     assert (working_path / "test/data/config.yml").exists() is False
@@ -38,6 +39,14 @@ def test_config_open(monkeypatch):
     target:str|None = ate.get('workbook_path_BsM')
     assert target is not None
 
+def test_config_worksheet_widths(monkeypatch):
+    #monkeypatch.setattr("xls_management.ROOTPATH",working_path / "test/data")
+    from xls_management.config import ATEConfig
+    ate = ATEConfig()
+    assert 'worksheet_widths' in ate.config.keys()
+    ww = ate.config['worksheet_widths']
+    assert 'ATE_Status' in ww.keys()
+    assert 'TD_Status' in ww.keys()
 
 def clean(working_file):
     file_path = working_path / working_file

@@ -121,8 +121,7 @@ class TestEnvironmentEvaluations:
 #   Private Sub AusgabeTUAbgleich(ByRef intAuswertungTUs() As Integer, ByRef strAuswertungTUs() As String, _
 #                                            ByRef strAuswertungTUsFehlendeAAs As String, ByRef strAuswertungTUsFehlendeTFs As String, _
 #                                            ByRef intAusgabeAuswertungTUs As Integer, ByRef strAusgabeAuswertungTUs As String, ByRef strAusgabeAuswertungTUsDetails As String)
-    def output_comparison(self):
-        ###TODO Ask someone: texts seems not reproduce data 
+    def output_comparison(self): 
 #       '1) alle TF operativ und VK:TU = TF:TU
 #       '2) TF vorhanden, aber Status != operativ oder VK:TU != TF:TU
 #       '3) keine TF vorhanden

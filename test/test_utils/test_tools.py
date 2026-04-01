@@ -5,6 +5,7 @@ import pytest
 from xls_management import HOMEPATH
 from xls_management.utils.tools import (
     all_in_sequence,
+    col_data_from,
     get_slices,
     list_from_comma_separated_str,
     col_name_from,
@@ -122,3 +123,12 @@ def test_index():
     assert str(exinfo.value) == "'two' is not in list"
     assert values.index('one') == 0
     assert values.index('three') == 1
+
+def test_col_data_from():
+    from xls_management.utils.tools import col_widths_from
+    values = [35.1, 10.2, 40.5]
+    expected = [('A',35.1), ('B',10.2), ('C',40.5)]
+    got = []
+    for v in col_widths_from(values):
+        got.append(v)
+    assert got == expected

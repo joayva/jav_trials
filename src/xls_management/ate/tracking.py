@@ -3,6 +3,7 @@ from pathlib import Path
 import re
 from itertools import islice
 
+from openpyxl.styles import PatternFill
 import pandas as pd
 
 from xls_management.ate.om.bsm_data import BSMData
@@ -16,6 +17,7 @@ from xls_management.ate.om.vw_requirement_predecessor import VWRequirementPredec
 from xls_management.ate.om.absicherungsauftraege import Absicherungsauftrag
 from xls_management.ate.om.test_environment_evaluation import TestEnvironmentEvaluations
 
+from xls_management.xlsx.fill_dict import FillDict
 from xls_management.utils.tools import lazy_join as unic_join
 #TODO: it should be replaced by unic_join after comparison with VBA script was fulfilled
 
@@ -40,6 +42,7 @@ from xls_management.utils.tools import list_from_comma_separated_str
 from importlib.metadata import version
 
 from xls_management.xlsx.workbook import Workbook
+from xls_management.xlsx.colors import BG_GREEN,BG_YELLOW,BG_RED
 
 CRLF ='_x000D_\n'
 
@@ -233,13 +236,13 @@ class ATEStatus:
                     output_path = self.workbook_BsM.file_path.parent / "output.xlsx"
                 wb = Workbook(output_path)
                 with wb.writer() as writer:
-                    for row_data_set, name in self.output_worksheets():
+                    for row_data_set, name, bg_colours in self.output_worksheets():
                         try:
                             df:pd.DataFrame = pd.DataFrame(
                                 row_data_set,
                                 dtype=str
                             )
-                            wb.append_worksheet(writer, df, name)
+                            wb.append_worksheet(writer, df, name, bg_colours=bg_colours)
                         except PermissionError:
                             print("Error: The file is open in another program. Please close it and try again.")
                         except Exception as  e:
@@ -1519,6 +1522,7 @@ class ATEStatus:
 #       Dim dblTDVKAnzahlUseCases As Double             'Anzahl der Vorkommen der Use-Case-Begriffe
 #       Dim strTDVKAktion As String                     'String zur Bearbeitung der TDVK-Aktion
 #       
+        bg_colours:FillDict = FillDict()
 #       'Tabelle erzeugen
 #       'Neues Worksheet erzeugen
 #       Set wksBsM = wbBsM.Sheets.Add(after:=wbBsM.Worksheets(wbBsM.Worksheets.Count))
@@ -1632,7 +1636,7 @@ class ATEStatus:
 #       End If
         bsm_output_data = {name : [] for name in bsm_attributes}
 #       
-        ###TODO formatting of the output table header
+        # Header format is implemented in Worksheet.append method
 #       'Tabellenkopf anlegen
 #       For i = LBound(strBsMAttribute, 1) To UBound(strBsMAttribute, 1)
 #           With rngBsMAttribute(i)
@@ -1957,45 +1961,46 @@ class ATEStatus:
 #                   blnTIUnerlaubt = True
 #               End If
 #           Next intUmsetzer
+            row = len(bsm_output_data[OutputBSMAttribute.TDTITE]) + 2 # dataframe row 0 is in excel row 2
 #           If blnTIUnerlaubt Then
-            ###if blnTIUnerlaubt:
-                ###TODO conditional cell background color format
+            if blnTIUnerlaubt:
 #               rngBsMAttribute(17).Offset(lngDatensatz, 0).Interior.Color = RGB(255, 255, 102)
+                bg_colours[OutputBSMAttribute.TDTITE.value][row] = BG_YELLOW
 #           End If
 #           'Ausgabe Vergleich TUs
 #           With rngBsMAttribute(19).Offset(lngDatensatz, 0)
 #               .Value = strAusgabeAuswertungTUs
             row_output[OutputBSMAttribute.OperationalComparisonTEsTDTC] = te_evaluations.output
-            ###TODO: conditional background color format-----
 #               If intAusgabeAuswertungTUs = 1 Then
-            ###if te_evaluations.int_output ==1:
+            if te_evaluations.int_output == 1:
 #                   'Grün
 #                   .Interior.Color = RGB(51, 204, 51)
+                bg_colours[OutputBSMAttribute.OperationalComparisonTEsTDTC.value][row] = BG_GREEN
+                bg_colours[OutputBSMAttribute.ComparisonExplanations.value][row] = BG_GREEN
 #               ElseIf intAusgabeAuswertungTUs = 2 Then
-            ###elif te_evaluations.int_output == 2:
+            elif te_evaluations.int_output == 2:
 #                   'Gelb
 #                   .Interior.Color = RGB(255, 255, 102)
+                bg_colours[OutputBSMAttribute.OperationalComparisonTEsTDTC.value][row] = BG_YELLOW
+                bg_colours[OutputBSMAttribute.ComparisonExplanations.value][row] = BG_YELLOW
 #               ElseIf intAusgabeAuswertungTUs = 3 Then
-            ###elif te_evaluations.int_output == 3:
+            elif te_evaluations.int_output == 3:
 #                   'Rot
 #                   .Interior.Color = RGB(255, 51, 0)
+                bg_colours[OutputBSMAttribute.OperationalComparisonTEsTDTC.value][row] = BG_RED
+                bg_colours[OutputBSMAttribute.ComparisonExplanations.value][row] = BG_RED
 #               End If
             ###-------------------------------------------------
 #           End With
 #           With rngBsMAttribute(28).Offset(lngDatensatz, 0)
 #               .Value = strAusgabeAuswertungTUsDetails
             row_output[OutputBSMAttribute.ComparisonExplanations] = te_evaluations.output_details
-            ###TODO: conditional background color format--------
-#               If intAusgabeAuswertungTUs = 1 Then
-            ###if te_evaluations.int_output ==1:
+            # Background colours implemented above
 #                   'Grün
 #                   .Interior.Color = RGB(51, 204, 51)
-#               ElseIf intAusgabeAuswertungTUs = 2 Then
-            ###elif te_evaluations.int_output == 2:
 #                   'Gelb
 #                   .Interior.Color = RGB(255, 255, 102)
 #               ElseIf intAusgabeAuswertungTUs = 3 Then
-            ###elif te_evaluations.int_output == 3:
 #                   'Rot
 #                   .Interior.Color = RGB(255, 51, 0)
 #               End If
@@ -2039,13 +2044,14 @@ class ATEStatus:
 #       End If
 #       
 #       'Spaltenbreite anpassen
-        ###TODO cells with formating
+        # cells width formating is implemented in Workbook.append method
 #       With wksBsM.Cells
 #           .Columns.AutoFit
 #           .Rows.AutoFit
 #       End With
 #       
 #       'Projektspezifische Sortierung - MEB21
+        # Implemented by declaring the column names sorted as wanted
         ###Done at bsm_output_data definition
 #       If strProjekt = "MEB21" Then
 #           wksBsM.Columns(35).Cut
@@ -2072,7 +2078,7 @@ class ATEStatus:
         #    ),
         #    name=worksheet_name,
         #)
-        return bsm_output_data, worksheet_name
+        return bsm_output_data, worksheet_name, bg_colours
 #   End Sub
 
     def output_worksheets(self):
@@ -2108,6 +2114,7 @@ class ATEStatus:
 #       Dim intRelevantekTUs As Integer                 'Integer für Anzahl der relevanten TUs
 #       Dim dblTDVKAnzahlUseCases As Double             'Anzahl der Vorkommen der Use-Case-Begriffe
 #       Dim strTDVKAktion As String                     'String zur Bearbeitung der TDVK-Aktion
+        bg_colours:FillDict = FillDict()
 #       
 #       'Tabelle erzeugen
 #       'Neues Worksheet erzeugen
@@ -2189,6 +2196,7 @@ class ATEStatus:
 #           Set rngTDAttribute(26) = wksTD.Cells(1, 26)
 #       End If
 #       
+        # Implemented in Workbook.append method
 #       'Tabellenkopf anlegen
 #       For i = LBound(strTDAttribute, 1) To UBound(strTDAttribute, 1)
 #           With rngTDAttribute(i)
@@ -2274,9 +2282,11 @@ class ATEStatus:
 #               'Ausgabe Zugeordnete I-Stufe
 #               rngTDAttribute(11).Offset(lngDatensatz, 0).Value = AusgabeSammlungLFEinfach(Verifikationskriterium.anf_IStufen)
                 row_data[TDAttribute.AsignedILevel] = unic_join(CRLF, verification_criterion.requirement_i_level)
-                ###TODO cell formatting: backgroundcolour
+                row = len(td_output_data[TDAttribute.AsignedILevel]) + 2 # dataframe row 0 is in excel row 2
 #               If AuswertungUnterschiedlicheIStufen(Verifikationskriterium.anf_IStufen) = True Then
+                if self.different_i_levels(verification_criterion.requirement_i_level):
 #                   rngTDAttribute(11).Offset(lngDatensatz, 0).Interior.Color = RGB(255, 255, 102)
+                    bg_colours[TDAttribute.AsignedILevel.value][row] = BG_YELLOW
 #               End If
 #               'Ausgabe Umsetzer
 #               rngTDAttribute(12).Offset(lngDatensatz, 0).Value = AusgabeSammlungLFEinfach(Verifikationskriterium.anf_Umsetzer)
@@ -2420,21 +2430,30 @@ class ATEStatus:
                 row_data[TDAttribute.OperativeTEComparisonTDTC] = te_evaluations.output
                 ###TODO format cell background color
 #                   If intAusgabeAuswertungTUs = 1 Then
+                if te_evaluations.int_output == 1:
 #                       'Grün
 #                       .Interior.Color = RGB(51, 204, 51)
+                    bg_colours[TDAttribute.OperativeTEComparisonTDTC.value][row] = BG_GREEN
+                    bg_colours[TDAttribute.ComparisonExplanations.value][row] = BG_GREEN
 #                   ElseIf intAusgabeAuswertungTUs = 2 Then
+                elif te_evaluations.int_output == 2:
 #                       'Gelb
 #                       .Interior.Color = RGB(255, 255, 102)
+                    bg_colours[TDAttribute.OperativeTEComparisonTDTC.value][row] = BG_YELLOW
+                    bg_colours[TDAttribute.ComparisonExplanations.value][row] = BG_YELLOW
 #                   ElseIf intAusgabeAuswertungTUs = 3 Then
+                elif te_evaluations.int_output == 3:
 #                       'Rot
 #                       .Interior.Color = RGB(255, 51, 0)
+                    bg_colours[TDAttribute.OperativeTEComparisonTDTC.value][row] = BG_RED
+                    bg_colours[TDAttribute.ComparisonExplanations.value][row] = BG_RED
 #                   End If
 #               End With
 #               With rngTDAttribute(7).Offset(lngDatensatz, 0)
 #                   .Value = strAusgabeAuswertungTUsDetails
                 row_data[TDAttribute.ComparisonExplanations] = te_evaluations.output_details
-                ###TODO format cell background color
 #                   If intAusgabeAuswertungTUs = 1 Then
+                #implemented above
 #                       'Grün
 #                       .Interior.Color = RGB(51, 204, 51)
 #                   ElseIf intAusgabeAuswertungTUs = 2 Then
@@ -2502,7 +2521,7 @@ class ATEStatus:
         #    ),
         #    name=worksheet_name,
         #)
-        return td_output_data, worksheet_name
+        return td_output_data, worksheet_name, bg_colours
 #       End Sub
 #
         ###Moved to test_environment_evaluation ---------------------------------       

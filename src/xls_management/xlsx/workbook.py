@@ -1,12 +1,14 @@
 import csv
 
-from openpyxl.styles import Alignment
+from openpyxl.styles import Alignment, Font, PatternFill
 import pandas as pd
 import os
 from pathlib import Path
 from typing import Generator
 
-from xls_management.utils.tools import col_name_from, get_slices
+from xls_management.config import ATEConfig
+from xls_management.utils.tools import col_data_from, get_slices
+from xls_management.xlsx.fill_dict import FillDict
 
 #CODEC = 'cp1252'
 CODEC = 'iso-8859-1'
@@ -24,6 +26,8 @@ class Workbook:
         else:
             self.file_path = Path(file_path)
         self.engine = engine
+        ate = ATEConfig()
+        self.config = ate.config
 
     def writer(self):
         return pd.ExcelWriter(self.file_path, engine=self.engine)
@@ -31,7 +35,13 @@ class Workbook:
     def reader(self):
         return pd.ExcelFile(self.file_path, engine=self.engine)
     
-    def append_worksheet(self, writer, data_frame:pd.DataFrame, name:str):
+    def append_worksheet(
+            self,
+            writer,
+            data_frame:pd.DataFrame,
+            name:str,
+            bg_colours:FillDict|None=None
+        ):
         try:
             df = data_frame.replace({r'\r\n':r'\n', r'_x000D_\n':r'\n', r'_x000D_':r'\r'},regex=True)
             df.to_excel(
@@ -43,12 +53,31 @@ class Workbook:
                 autofilter=True,
                 na_rep='',
             )
+            row_len = len(df)
             worksheet = writer.sheets[name]
-            for index in range(len(data_frame.columns)):
-                col_name =col_name_from(index)
-                columns = worksheet.column_dimensions[col_name]
-                columns.alignment = Alignment(wrap_text=True)
-                columns.width =70
+            header_fill:PatternFill = PatternFill(**(self.config['header_style']['fill']))
+            header_font:Font = Font(**(self.config['header_style']['font']))
+            width_values = [35.0]*len(data_frame.columns)
+            if 'worksheet_widths' in self.config.keys():
+                prefix= name[:-9]
+                config_widths = self.config['worksheet_widths']
+                if prefix in config_widths.keys():
+                    width_values = config_widths[prefix]
+
+            for col_name, width_value in col_data_from(width_values):
+                #set head style
+                cell_name = f'{col_name}1'
+                field_name = worksheet[cell_name].value
+                worksheet[cell_name].fill = header_fill
+                worksheet[cell_name].font = header_font
+                #set widht
+                for row in range(2,row_len+1):
+                    worksheet[f'{col_name}{row}'].alignment = Alignment(wrap_text=True,vertical="top")
+                worksheet.column_dimensions[col_name].width = width_value
+                bg_colour:PatternFill
+                if bg_colours is not None and field_name in bg_colours.keys():
+                    for row, bg_colour in bg_colours[field_name].items():
+                        worksheet[f'{col_name}{row}'].fill = bg_colour
             print(f"DataFrame saved to '{name}' in {self.file_path}")
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -56,7 +85,7 @@ class Workbook:
     def sheet_names(self) -> list[int|str]:
         """
         Returns a list of sheet names from an Excel file.
-        :return: List of sheet names or None if error occurs
+        :return: List of sheet names or None if error 
         """
         try:
             # Validate file existence

@@ -1,4 +1,5 @@
 import re
+from typing import Any
 
 
 def all_in_sequence(sequence_0:list|tuple, sequence_1:list|tuple) -> bool:
@@ -73,4 +74,8 @@ def lazy_join(str_value:str, input_list:list[str]|tuple[str]):
     for v in input_list[1:]:
         if v not in str_list:
             str_list += f'{str_value}{v}'
-    return str_list   
+    return str_list
+
+def col_data_from(data:list[Any]|tuple[Any]):
+    for i, v in enumerate(data):
+        yield col_name_from(i), v 
