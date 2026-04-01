@@ -16,6 +16,10 @@ class MyShell(cmd.Cmd):
     )
     prompt = "(ate) "
 
+    def __init__(self):
+        super().__init__()
+        self.ate_status = ATEStatus()
+
     # Example command
     def do_project(self, arg):
         """project <name>"""
@@ -24,9 +28,8 @@ class MyShell(cmd.Cmd):
 
     def do_status(self, arg):
         """status"""
-        ate_status:ATEStatus|None = ATEStatus()
-        assert ate_status.config is not None
-        ate_status.perform_status()
+        assert self.ate_status.config is not None
+        self.ate_status.perform_status()
 
     def do_choose(self, arg):
         """choose a project from a list using a combobox"""
@@ -39,6 +42,19 @@ class MyShell(cmd.Cmd):
         if not evalue_master_id:
             msg = f'{ansi_color("do not evalue",Color.RED)} master id'
         print(msg)
+
+    def do_config(self, arg):
+        """choose a config file"""
+        evalue_master_id: bool
+        if not arg:
+            print(ansi_color('A file path is required', Color.RED))
+        else:
+            path = Path(arg)
+            if path.exists():
+                self.ate_status.config.config_from(arg)
+                print(ansi_color(f'Updated config from {arg}', Color.GREEN))
+            else:
+                print(ansi_color(f'{arg} file does not exist', Color.RED))
 
     def do_ask(self, arg):
         """choose a project from a list using a combobox"""

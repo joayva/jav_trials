@@ -427,6 +427,58 @@ def test_ATEStatus_perform_status_td_errors_5():
                 #assert len(ws) == 10
         sys.stdout = old_stdout
 
+def test_ATEStatus_perform_status_uc_config():
+    """
+    A repesentative sample of missing TD Status rows; comparing to VBA execution output
+    is used.
+    """
+    # ensure fresh imports so patched functions are picked up by modules
+    old_stdout = sys.stdout
+    to_remove = [name for name in sys.modules if name.startswith("xls_management")]
+    for name in to_remove:
+        del sys.modules[name]
+
+    # prepare a list of file paths to be returned by the file picker
+    file_path = working_path / "../ATEStatus_perfom_status.txt"
+    # side_effect list long enough for repeated calls
+    output_path = working_path / '../out/sc_output.xlsx'
+    if not output_path.parent.exists():
+        os.makedirs(output_path.parent, exist_ok=True)
+    with file_path.open("w") as f:
+        sys.std_out = f
+        with(
+            patch('xls_management.ate.project.project_combo_box', return_value=('MEB21', False)),
+            patch('xls_management.tui.msgbox.msgbox', new=fake_print),
+            patch('xls_management.tui.yes_no_form.yes_no_msgbox', new=fake_msgbox_no),
+            patch('xls_management.ate.tracking.date') as mock_date,
+        ):
+            mock_date.today.return_value=datetime.date(2026, 3, 23)
+            fake_print(f'....{__name__}')
+            # import after patches so module-level imports pick up the patched functions
+            from xls_management.shell.ate import ATEStatus
+
+            ate_status = ATEStatus()
+            ate_status.config.config_from(working_path / '..\\in\\uc_config.yml')
+            #sheets = ate_status.output_workbook.sheet_names()
+            #fake_print(', '.join(sheets))
+            fake_print('..starting perform_status')
+            ate_status.perform_status(output_path)
+            fake_print('..perform_status ended')
+
+            # project and flag were set by the mocked combo box
+            assert ate_status.project == 'MEB21'
+            assert ate_status.use_predecessor_ids is False
+            
+            # check expected output
+            w = Workbook(output_path)
+            names = [name for name in w.sheet_names() if name[:2] == 'TD']
+            assert len(names) == 1
+            fake_print(','.join(names))
+            with w.reader() as r:
+                ws = w.sheet(names[0])
+                assert len(ws) == 10
+        sys.stdout = old_stdout
+
 def test_ATEStatus_perform_status_uc():
     """
     A repesentative sample of missing TD Status rows; comparing to VBA execution output

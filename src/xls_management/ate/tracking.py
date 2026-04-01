@@ -10,16 +10,12 @@ from openpyxl.styles import PatternFill
 from xls_management.ate.data_de import KNOWN_TEST_ENVIRONMENTS
 from xls_management.ate.data_de import \
     RELEVANT_TEST_ENVIRONMENT_TOP as RELEVANT_TOP
-from xls_management.ate.data_de import (
-    FRUTimingAttribute, OutputBSMAttribute,
-    RequirementAttribute,
-    RequirementMasterAttribute,
-    TDAttribute,
-    TDProjectAttribute,
-    TDSafeGuardsAttribute,
-    TDVCAttribute,
-    TestCaseAttribute,
-)
+from xls_management.ate.data_de import (FRUTimingAttribute, OutputBSMAttribute,
+                                        RequirementAttribute,
+                                        RequirementMasterAttribute,
+                                        TDAttribute, TDProjectAttribute,
+                                        TDSafeGuardsAttribute, TDVCAttribute,
+                                        TestCaseAttribute)
 from xls_management.ate.om.absicherungsauftraege import Absicherungsauftrag
 from xls_management.ate.om.bsm_data import BSMData
 from xls_management.ate.om.bsm_successor_data import BSMSuccessorData
@@ -396,7 +392,10 @@ class ATEStatus:
             )
 #           If EinlesenDatei_Projektspezifisch("Anforderungen Projekt " & strProjekt, strAVWAttribute, rngAVWAttribute, wbAVW, wksAVW, strFehlerAVW, strDateinamen(1), strProjekt, strAVWAttributeMEB21, rngAVWAttributeMEB21) Then
 #               blnImportAttribute(1) = True
-            self.import_attribute[0] = self.info_AVW.einlesen_datei(f"Anforderungen Projekt {self.project}")
+            self.import_attribute[0] = self.info_AVW.einlesen_datei(
+                f"Requirements Project {self.project}",
+                self.config.get('requirements_path', ''),
+            )
 #           Else
 #               'Sammlung aller gesuchten allgemeinen Attribute erzeugen
 #               For i = LBound(strAVWAttribute, 1) To UBound(strAVWAttribute, 1)
@@ -429,7 +428,10 @@ class ATEStatus:
 #           ImportAttribute(1) = True
         else:
             #No project specific importation
-            self.import_attribute[0] = self.info_AVW.einlesen_datei("Anforderungen Projektbereich")
+            self.import_attribute[0] = self.info_AVW.einlesen_datei(
+                "Requirements project report",
+                self.config.get('requirements_path',''),
+            )
         if not self.import_attribute[0]:
 #           'Sammlung aller gesuchten Attribute erzeugen
 #           strAttributeAVW = ""
@@ -467,7 +469,10 @@ class ATEStatus:
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("Verifikationskriterien", strTDVKAttribute, rngTDVKAttribute, wbTDVK, wksTDVK, strFehlerTDVK, strDateinamen(2)) Then
 #               blnImportAttribute(2) = True
-            self.import_attribute[1] = self.info_TDVK.einlesen_datei("Verifikationskriterien")
+            self.import_attribute[1] = self.info_TDVK.einlesen_datei(
+                'Verification kriteria',
+                self.config.get('verification_criteria_path', ''),
+            )
 #           Else
 #               'Sammlung aller gesuchten Attribute erzeugen
 #               strAttributeTDVK = ""
@@ -508,7 +513,10 @@ class ATEStatus:
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("Absicherungsaufträge", strTDAAAttribute, rngTDAAAttribute, wbTDAA, wksTDAA, strFehlerTDAA, strDateinamen(3)) Then
 #               blnImportAttribute(3) = True
-            self.import_attribute[2] = self.info_TDAA.einlesen_datei("Absicherungsaufträge")
+            self.import_attribute[2] = self.info_TDAA.einlesen_datei(
+                "Security orders",
+                self.config.get('security_orders_path', ''),
+            )
 #           Else
 #               'Sammlung aller gesuchten Attribute erzeugen
 #               strAttributeTDAA = ""
@@ -551,7 +559,10 @@ class ATEStatus:
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("Testfälle", strTFAttribute, rngTFAttribute, wbTF, wksTF, strFehlerTF, strDateinamen(4)) Then
 #               blnImportAttribute(4) = True
-            self.import_attribute[3] = self.info_TF.einlesen_datei("Testfälle")
+            self.import_attribute[3] = self.info_TF.einlesen_datei(
+                "Test cases",
+                self.config.get('test_cases_path', ''),
+            )
 #           Else
             if not self.import_attribute[3]:
 #               'Sammlung aller gesuchten Attribute erzeugen
@@ -591,7 +602,10 @@ class ATEStatus:
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("FRU-Timing", strFRUTimingAttribute, rngFRUTimingAttribute, wbFRUTiming, wksFRUTiming, strFehlerFRUTiming, strDateinamen(5)) Then
 #               blnImportAttribute(5) = True
-            self.import_attribute[4] = self.info_fru_timming.einlesen_datei("FRU-Timing")
+            self.import_attribute[4] = self.info_fru_timming.einlesen_datei(
+                "FRU-Timing",
+                self.config.get('timing_path', ''),
+            )
 #           Else
             if not self.import_attribute[4]:
 #               'Sammlung aller gesuchten Attribute erzeugen
@@ -633,7 +647,10 @@ class ATEStatus:
 #               'Dateiauswahl und Zuordnung
 #               If EinlesenDatei("Anforderungen Masterbereich", strAVWMasterAttribute, rngAVWMasterAttribute, wbAVWMaster, wksAVWMaster, strFehlerAVWMaster, strDateinamen(6)) Then
 #                   blnImportAttribute(6) = True
-                self.import_attribute[5] = self.info_AVW_master.einlesen_datei("Anforderungen Masterbereich")
+                self.import_attribute[5] = self.info_AVW_master.einlesen_datei(
+                    "Anforderungen Masterbereich",
+                    self.config.get('requirements_mb_path', ''),
+                )
 #               Else
                 if not self.import_attribute[5]:
 #                   'Sammlung aller gesuchten Attribute erzeugen

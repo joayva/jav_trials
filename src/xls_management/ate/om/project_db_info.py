@@ -39,7 +39,7 @@ class ProjectDBInfo(DBInfo):
     
 #   Public Function EinlesenDatei_Projektspezifisch(ByVal strTitel As String, ByRef strAttribute() As String, ByRef rngAttribute() As Range, ByRef wbImport As Workbook, ByRef wksImport As Worksheet, ByRef strFehler As String, ByRef strDateinamen As String, _
 #                                                       ByVal strProjekt As String, ByRef strAttributeProjekt() As String, ByRef rngAttributeProjekt() As Range) As Boolean
-    def einlesen_datei(self, titel:str) -> bool:
+    def einlesen_datei(self, titel:str, import_file_path:str='') -> bool:
         """
         user chooses a workbook using a file picker widget
         True,"" is returned if each expected attribute is in one of the workbook sheets;
@@ -79,7 +79,10 @@ class ProjectDBInfo(DBInfo):
         first_find_columns:pd.DataFrame|None = None
 #       
 #       strImportPfad = Application.GetOpenFilename(FileFilter:="Excel-Dateien (*.xls; *.xlsx; *.xlm; *.xlsm), *.xls; *.xlsx; *.xlm; *.xlsm", FilterIndex:=1, Title:=strTitel & " auswählen")
-        import_file_path = path_from_file_picker(location=".", title= f"{titel} auswählen")
+        if import_file_path == '':
+            import_file_path = path_from_file_picker(location=".", title= f"{titel} auswählen")
+        elif isinstance(import_file_path,str):
+            import_file_path = Path(import_file_path)
 #       If Trim(strImportPfad) <> "Falsch" Then
         if import_file_path is not None:
 #           'Datei öffnen
