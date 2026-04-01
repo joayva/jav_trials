@@ -1,13 +1,13 @@
 import re
+
 import pandas as pd
 
+from xls_management.ate.data_de import (AVWProjectAttribute,
+                                        RequirementAttribute)
 from xls_management.ate.om.fru_timming import FRUTiming
 from xls_management.ate.om.test_case import TestCase
 from xls_management.ate.om.verificationskriterium import Verificationskriterium
-from xls_management.ate.data_de import (
-    RequirementAttribute,
-    AVWProjectAttribute,
-)
+
 
 #class BSMDaten (DE)
 class BSMData:

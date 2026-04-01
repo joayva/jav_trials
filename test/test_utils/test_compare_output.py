@@ -1,10 +1,9 @@
 import re
+
 import pandas as pd
 
 from xls_management import HOMEPATH
-from xls_management.utils.compare_output import (
-    compare_outputs,
-)
+from xls_management.utils.compare_output import compare_outputs
 from xls_management.xlsx.workbook import Workbook
 
 

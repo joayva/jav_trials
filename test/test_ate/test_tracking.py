@@ -1,14 +1,14 @@
 
-from contextlib import redirect_stdout
+import datetime
 import os
-from unittest.mock import patch
+import sys
+from contextlib import redirect_stdout
 from pathlib import Path
 from test import working_path
-import datetime
-
-import sys
+from unittest.mock import patch
 
 from xls_management.xlsx.workbook import Workbook
+
 
 def fake_msgbox_no(msg:str)->bool:
     print(f'{msg}\nNo')

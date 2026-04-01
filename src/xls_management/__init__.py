@@ -1,6 +1,6 @@
-from pathlib import Path
 import os
 import platform
+from pathlib import Path
 
 ROOTPATH = Path(__file__).parent
 home_var:str

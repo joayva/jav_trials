@@ -1,8 +1,10 @@
-from textual.app import App, ComposeResult
-from textual.widgets import DataTable, Header, Footer
 from textual import events
-from xls_management.com.workbook import Workbook
+from textual.app import App, ComposeResult
+from textual.widgets import DataTable, Footer, Header
+
 from xls_management.ate import PROJECTS
+from xls_management.com.workbook import Workbook
+
 
 class TableApp(App):
     """A simple Textual app with a DataTable widget."""

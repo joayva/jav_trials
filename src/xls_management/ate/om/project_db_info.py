@@ -1,11 +1,13 @@
 
-import pandas as pd
 from pathlib import Path
 
+import pandas as pd
+
 from xls_management.ate.om.db_info import DBInfo
-from xls_management.tui.yes_no_form import yes_no_msgbox
 from xls_management.tui.file_picker import path_from_file_picker
+from xls_management.tui.yes_no_form import yes_no_msgbox
 from xls_management.xlsx.workbook import Workbook
+
 
 class ProjectDBInfo(DBInfo):
     def __init__(

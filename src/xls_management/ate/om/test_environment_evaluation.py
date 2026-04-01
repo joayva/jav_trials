@@ -1,7 +1,7 @@
-from xls_management.ate.data_de import (
-    KNOWN_TEST_ENVIRONMENTS,
-    RELEVANT_TEST_ENVIRONMENT_TOP as RELEVANT_TOP,
-)
+from xls_management.ate.data_de import KNOWN_TEST_ENVIRONMENTS
+from xls_management.ate.data_de import \
+    RELEVANT_TEST_ENVIRONMENT_TOP as RELEVANT_TOP
+
 
 class TestEnvironmentEvaluation:
     def __init__(self):

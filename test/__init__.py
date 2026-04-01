@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 from pathlib import Path
 
 # Get absolute paths for src and tests

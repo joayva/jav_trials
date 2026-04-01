@@ -1,9 +1,11 @@
-import pytest
 from test import working_path
+
 import pandas as pd
+import pytest
 
 from xls_management.is_ole import is_ole
 from xls_management.xlsx.workbook import Workbook
+
 
 def test_is_ole_non_existing():
     my_file = working_path / 'test/data/non_existing.xls'

@@ -1,8 +1,11 @@
 import os
+
 from textual.app import App, ComposeResult
-from textual.widgets import Select, Static, RadioSet, RadioButton, Button
 from textual.containers import Container
+from textual.widgets import Button, RadioButton, RadioSet, Select, Static
+
 from xls_management.ate import PROJECTS
+
 
 class ProjectChoice(App):
     CSS_PATH = "project_form.tcss"

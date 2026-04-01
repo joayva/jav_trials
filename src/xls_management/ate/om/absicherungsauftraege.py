@@ -1,5 +1,7 @@
 import re
+
 import pandas as pd
+
 from xls_management.ate.data_de import TDSafeGuardsAttribute
 
 

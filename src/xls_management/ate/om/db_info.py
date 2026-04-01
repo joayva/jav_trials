@@ -1,7 +1,9 @@
 from pathlib import Path
+
+import pandas as pd
+
 from xls_management.tui.file_picker import path_from_file_picker
 from xls_management.xlsx.workbook import Workbook
-import pandas as pd
 
 
 class DBInfo:

@@ -1,10 +1,10 @@
 import csv
-
-from openpyxl.styles import Alignment, Font, PatternFill
-import pandas as pd
 import os
 from pathlib import Path
 from typing import Generator
+
+import pandas as pd
+from openpyxl.styles import Alignment, Font, PatternFill
 
 from xls_management.config import ATEConfig
 from xls_management.utils.tools import col_data_from, get_slices

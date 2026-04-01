@@ -1,8 +1,10 @@
 import os
 import test
-from test import working_path
-from xls_management import HOMEPATH
 from pathlib import Path
+from test import working_path
+
+from xls_management import HOMEPATH
+
 
 def test_config_create(monkeypatch):
     clean("test/data/config.yml")

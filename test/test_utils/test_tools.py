@@ -3,13 +3,9 @@ import re
 import pytest
 
 from xls_management import HOMEPATH
-from xls_management.utils.tools import (
-    all_in_sequence,
-    col_data_from,
-    get_slices,
-    list_from_comma_separated_str,
-    col_name_from,
-)
+from xls_management.utils.tools import (all_in_sequence, col_data_from,
+                                        col_name_from, get_slices,
+                                        list_from_comma_separated_str)
 
 
 def test_all_in_sequence():

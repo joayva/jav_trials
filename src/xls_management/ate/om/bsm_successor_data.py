@@ -1,8 +1,11 @@
 import pandas as pd
-from xls_management.ate.om.vw_requirement_predecessor import VWRequirementPredecessor
+
 from xls_management.ate.om.bsm_data import BSMData
 from xls_management.ate.om.fru_timming import FRUTiming
 from xls_management.ate.om.verificationskriterium import Verificationskriterium
+from xls_management.ate.om.vw_requirement_predecessor import \
+    VWRequirementPredecessor
+
 
 #class BSMNachfolgerDaten
 class BSMSuccessorData(BSMData):

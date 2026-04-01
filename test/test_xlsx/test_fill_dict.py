@@ -1,8 +1,9 @@
  
 # Define background colors
 from openpyxl.styles import PatternFill
+
+from xls_management.xlsx.colors import BG_GREEN, BG_RED, BG_YELLOW
 from xls_management.xlsx.fill_dict import FillDict
-from xls_management.xlsx.colors import BG_GREEN,BG_YELLOW,BG_RED
 
 
 def test_fill_dict():

@@ -1,5 +1,7 @@
 import yaml
-from xls_management import ROOTPATH, HOMEPATH
+
+from xls_management import HOMEPATH, ROOTPATH
+
 
 class ATEConfig():
     config_file = ROOTPATH / "config.yml"

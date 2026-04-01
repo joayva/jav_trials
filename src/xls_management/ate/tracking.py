@@ -1,48 +1,50 @@
-from datetime import date, datetime
-from pathlib import Path
 import re
+from datetime import date, datetime
+from importlib.metadata import version
 from itertools import islice
+from pathlib import Path
 
-from openpyxl.styles import PatternFill
 import pandas as pd
+from openpyxl.styles import PatternFill
 
-from xls_management.ate.om.bsm_data import BSMData
-from xls_management.ate.om.bsm_successor_data import BSMSuccessorData
-from xls_management.ate.om.db_info import DBInfo 
-from xls_management.ate.om.fru_timming import FRUTiming
-from xls_management.ate.om.project_db_info import ProjectDBInfo
-from xls_management.ate.om.test_case import TestCase
-from xls_management.ate.om.verificationskriterium  import Verificationskriterium
-from xls_management.ate.om.vw_requirement_predecessor import VWRequirementPredecessor
-from xls_management.ate.om.absicherungsauftraege import Absicherungsauftrag
-from xls_management.ate.om.test_environment_evaluation import TestEnvironmentEvaluations
-
-from xls_management.xlsx.fill_dict import FillDict
-from xls_management.utils.tools import lazy_join as unic_join
-#TODO: it should be replaced by unic_join after comparison with VBA script was fulfilled
-
+from xls_management.ate.data_de import KNOWN_TEST_ENVIRONMENTS
+from xls_management.ate.data_de import \
+    RELEVANT_TEST_ENVIRONMENT_TOP as RELEVANT_TOP
 from xls_management.ate.data_de import (
+    FRUTimingAttribute, OutputBSMAttribute,
     RequirementAttribute,
     RequirementMasterAttribute,
-    OutputBSMAttribute,
+    TDAttribute,
     TDProjectAttribute,
     TDSafeGuardsAttribute,
     TDVCAttribute,
     TestCaseAttribute,
-        FRUTimingAttribute,
-        TDAttribute,
-    KNOWN_TEST_ENVIRONMENTS,
-    RELEVANT_TEST_ENVIRONMENT_TOP as RELEVANT_TOP,
 )
+from xls_management.ate.om.absicherungsauftraege import Absicherungsauftrag
+from xls_management.ate.om.bsm_data import BSMData
+from xls_management.ate.om.bsm_successor_data import BSMSuccessorData
+from xls_management.ate.om.db_info import DBInfo
+from xls_management.ate.om.fru_timming import FRUTiming
+from xls_management.ate.om.project_db_info import ProjectDBInfo
+from xls_management.ate.om.test_case import TestCase
+from xls_management.ate.om.test_environment_evaluation import \
+    TestEnvironmentEvaluations
+from xls_management.ate.om.verificationskriterium import Verificationskriterium
+from xls_management.ate.om.vw_requirement_predecessor import \
+    VWRequirementPredecessor
 from xls_management.ate.project import project_combo_box
-from xls_management.tui.msgbox import msgbox
 from xls_management.config import ATEConfig
+from xls_management.tui.msgbox import msgbox
+from xls_management.utils.tools import lazy_join as unic_join
 from xls_management.utils.tools import list_from_comma_separated_str
-
-from importlib.metadata import version
-
+from xls_management.xlsx.colors import BG_GREEN, BG_RED, BG_YELLOW
+from xls_management.xlsx.fill_dict import FillDict
 from xls_management.xlsx.workbook import Workbook
-from xls_management.xlsx.colors import BG_GREEN,BG_YELLOW,BG_RED
+
+#TODO: it should be replaced by unic_join after comparison with VBA script was fulfilled
+
+
+
 
 CRLF ='_x000D_\n'
 

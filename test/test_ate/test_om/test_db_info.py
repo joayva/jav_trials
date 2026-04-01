@@ -1,8 +1,10 @@
 from pathlib import Path
+from test import working_path
 from unittest.mock import patch
+
 from xls_management.ate.om.db_info import DBInfo
 from xls_management.utils.tools import all_in_sequence
-from test import working_path
+
 
 def test_db_info_init():
     data:DBInfo = DBInfo(attributes=('License plate', 'Brand', 'Modell'))

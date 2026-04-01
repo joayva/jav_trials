@@ -8,8 +8,9 @@
 #     --output path/to/differences.xlsx   (optional)
 
 import argparse
-import pandas as pd
 from pathlib import Path
+
+import pandas as pd
 
 SHEET_NAME = "Testergebnisse"
 HEADER_ROW = 4   # row 5 in Excel = index 4 in pandas

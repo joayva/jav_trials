@@ -1,11 +1,13 @@
 import cmd
 from pathlib import Path
+
 from xls_management.ate import PROJECTS
 from xls_management.ate.project import project_combo_box
+from xls_management.ate.tracking import ATEStatus
 from xls_management.tui.file_picker import path_from_file_picker
 from xls_management.tui.yes_no_form import yes_no_msgbox
 from xls_management.utils.color import Color, ansi_color
-from xls_management.ate.tracking import ATEStatus
+
 
 class MyShell(cmd.Cmd):
     intro = (

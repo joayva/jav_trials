@@ -1,5 +1,6 @@
 from xls_management.tui.project_form import ProjectChoice
-    
+
+
 def project_combo_box() -> tuple[str, bool]:
     app = ProjectChoice()
     app.run()

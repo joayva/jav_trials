@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 # ANSI escape codes for colors
 class Color(str,Enum):
     RED = "\033[91m"

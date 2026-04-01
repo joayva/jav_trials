@@ -1,9 +1,11 @@
 from pathlib import Path
+
 from textual import work
 from textual.app import App, ComposeResult
-from textual.widgets import Static, Select
+from textual.message import Message
+from textual.widgets import Select, Static
 from textual_fspicker import FileOpen, Filters
-from textual.message import Message 
+
 
 class FilePickerApp(App[None]):
     def __init__(self, path:Path, filters:Filters, title:str="Open"):

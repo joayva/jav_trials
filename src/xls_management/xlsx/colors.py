@@ -1,6 +1,5 @@
 from openpyxl.styles import PatternFill
 
-
 # Define background colors
 BG_YELLOW:PatternFill = PatternFill(
     fill_type = 'solid',
