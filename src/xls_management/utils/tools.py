@@ -61,13 +61,13 @@ def get_slices(start, top, size):
 def unic_join(str_value:str, input_list:list|tuple):
     if len(input_list) == 0:
         return ''
-    values = input_list[:1]
+    values = list(input_list[:1])
     for v in input_list[1:]:
         if v not in values:
             values.append(v)
     return str_value.join([str(v) for v in values])
 
-def lazy_join(str_value:str, input_list:list[str]|tuple[str]):
+def lazy_join(str_value:str, input_list:list[str]|tuple[str, ...]):
     if len(input_list) == 0:
         return ''
     str_list = input_list[0]

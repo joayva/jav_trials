@@ -38,7 +38,7 @@ def path_from_file_picker(
     ),
     title:str="Open"
 )-> str:
-    file_picker = FilePickerApp(path=location, filters=filters,title=title)
+    file_picker = FilePickerApp(path=Path(location), filters=filters,title=title)
     file_picker.run()
     return file_picker.file_name
 

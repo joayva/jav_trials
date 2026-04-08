@@ -3,6 +3,7 @@ from datetime import date, datetime
 from importlib.metadata import version
 from itertools import islice
 from pathlib import Path
+from typing import Any
 
 import pandas as pd
 from openpyxl.styles import PatternFill
@@ -62,7 +63,7 @@ class ATEStatus:
 
         self.config=ATEConfig()
         self.use_predecessor_ids = False
-        self.project = None
+        self.project = ''
 #       'Klasse Verifikationskriterien mit Absicherungsaufträgen
 #       Public verifikationKritList As New Collection
         self.verification_criteria:dict = {}
@@ -369,10 +370,14 @@ class ATEStatus:
 #           strAVWAttribute(23) = "Abgezweigt aus"  'strAVWAttribute(22) = "Abgezweigt aus"
 #       End If
         if self.use_predecessor_ids:
-            self.info_AVW = DBInfo(attributes=RequirementAttribute)
+            self.info_AVW = DBInfo(
+                attributes = tuple(a.value for a in RequirementAttribute)
+            )
         else:
             self.info_AVW = DBInfo(
-                attributes=islice(RequirementAttribute,0,len(RequirementAttribute)-1)
+                attributes = tuple(
+                    a.value for a in RequirementAttribute if a != RequirementAttribute.RedirectedFrom
+                )
             )
 #
 #       'Dateiauswahl und Zuordnung
@@ -383,7 +388,7 @@ class ATEStatus:
 #           ReDim strAVWAttributeMEB21(1 To 1)
 #           ReDim rngAVWAttributeMEB21(1 To 1)
 #           strAVWAttributeMEB21(1) = "Temp11_Auswahlfeld"
-            attributes_MBE21_AVW:tuple[str] = ('Temp11_Auswahlfeld',)
+            attributes_MBE21_AVW:tuple[str, ...] = ('Temp11_Auswahlfeld',)
             self.info_AVW = ProjectDBInfo(
                 path=self.config.get('default_path', '.'),
                 db_info=self.info_AVW,
@@ -392,7 +397,7 @@ class ATEStatus:
             )
 #           If EinlesenDatei_Projektspezifisch("Anforderungen Projekt " & strProjekt, strAVWAttribute, rngAVWAttribute, wbAVW, wksAVW, strFehlerAVW, strDateinamen(1), strProjekt, strAVWAttributeMEB21, rngAVWAttributeMEB21) Then
 #               blnImportAttribute(1) = True
-            self.import_attribute[0] = self.info_AVW.einlesen_datei(
+            self.import_attribute[0] = self.info_AVW is not None and self.info_AVW.einlesen_datei(
                 f"Requirements Project {self.project}",
                 self.config.get('requirements_path', ''),
             )
@@ -464,7 +469,7 @@ class ATEStatus:
         if self.import_attribute[0]:
             self.info_TDVK = DBInfo(
                 path=self.config.get('default_path', '.'),
-                attributes = TDVCAttribute,
+                attributes = tuple(a.value for a in TDVCAttribute),
             )
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("Verifikationskriterien", strTDVKAttribute, rngTDVKAttribute, wbTDVK, wksTDVK, strFehlerTDVK, strDateinamen(2)) Then
@@ -508,7 +513,7 @@ class ATEStatus:
 #           strTDAAAttribute(5) = "Testumgebungstyp"
             self.info_TDAA = DBInfo(
                 path=self.config.get('default_path', '.'),
-                attributes = TDSafeGuardsAttribute
+                attributes = tuple(a.value for a in  TDSafeGuardsAttribute)
             )
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("Absicherungsaufträge", strTDAAAttribute, rngTDAAAttribute, wbTDAA, wksTDAA, strFehlerTDAA, strDateinamen(3)) Then
@@ -554,7 +559,7 @@ class ATEStatus:
         if self.import_attribute[2]:
             self.info_TF = DBInfo(
                 path=self.config.get('default_path', '.'),
-                attributes = TestCaseAttribute,
+                attributes = tuple(a.value for a in TestCaseAttribute),
             )
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("Testfälle", strTFAttribute, rngTFAttribute, wbTF, wksTF, strFehlerTF, strDateinamen(4)) Then
@@ -597,7 +602,7 @@ class ATEStatus:
 #           strFRUTimingAttribute(4) = "FE_Meilenstein" 'vorher "Zuordnung zu I-Stufe"
             self.info_fru_timming = DBInfo(
                 path=self.config.get('default_path', '.'),
-                attributes = FRUTimingAttribute,
+                attributes = tuple(a.value for a in FRUTimingAttribute),
             )
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("FRU-Timing", strFRUTimingAttribute, rngFRUTimingAttribute, wbFRUTiming, wksFRUTiming, strFehlerFRUTiming, strDateinamen(5)) Then
@@ -642,7 +647,7 @@ class ATEStatus:
 #               strAVWMasterAttribute(3) = "Kommentar Redaktionskreis"
                 self.info_AVW_master = DBInfo(
                     path=self.config.get('default_path', '.'),
-                    attributes = RequirementMasterAttribute
+                    attributes = tuple(a.value for a in RequirementMasterAttribute)
                 )
 #               'Dateiauswahl und Zuordnung
 #               If EinlesenDatei("Anforderungen Masterbereich", strAVWMasterAttribute, rngAVWMasterAttribute, wbAVWMaster, wksAVWMaster, strFehlerAVWMaster, strDateinamen(6)) Then
@@ -1264,7 +1269,7 @@ class ATEStatus:
 #   End Function
 #   
 #   Private Function AusgabeSammlungLFEinfach(ByRef list As Collection) As String
-    def AusgabeSammlungLFEinfach(self, input_list:list[str]|tuple[str]):
+    def AusgabeSammlungLFEinfach(self, input_list:list[str]|tuple[str, ...]):
         ###TOBEDEL: it can be replaced by a join sentence.
         return unic_join(CRLF, input_list)
 #       Dim strTemp As String
@@ -1323,7 +1328,7 @@ class ATEStatus:
 #   End Function
 #   
 #   Private Function FindeVK(ByRef Liste As Collection, ByVal strKey As String) As Verifikationskriterium
-    def FindeVK(self, liste:dict[str,Verificationskriterium], key:str) -> Verificationskriterium:
+    def FindeVK(self, liste:dict[str,Verificationskriterium], key:str) -> Verificationskriterium|None:
         return liste.get(key,None)
         #TOBEDEL Non required use get method instead.
 #       Dim ListenObjekt As Verifikationskriterium
@@ -1507,7 +1512,7 @@ class ATEStatus:
                 self.other_test_environment.append(security_order.test_environment_type)
 
 #   Private Sub AusgabeATEStatus(ByVal wbBsM As Workbook, ByRef wksBsM As Worksheet, ByRef strBsMAttribute() As String, ByRef rngBsMAttribute() As Range, ByRef strWeitereTUsAusgabe As String, ByRef strDateinamen() As String, ByVal strProjekt As String)
-    def output_status(self) -> tuple[dict[str,list[str]],str]:
+    def output_status(self) -> tuple[dict[str,list[str]],str, FillDict]:
 #       Dim lngDatensatz As Long                        'Long-Variable für aktuell zu schreibenden Datensatz
 #       Dim varErfassteBsMDatensatzItem As Variant      'Variant für Item im globalen BsM-Datensatz
 #       Dim varErfassteTDAAItem As Variant              'Variant für Item aus den jeweiligen Absicherungsaufträgen
@@ -1650,10 +1655,10 @@ class ATEStatus:
 #           ReDim Preserve strBsMAttribute(LBound(strBsMAttribute, 1) To UBound(strBsMAttribute, 1) + 1)
 #           ReDim Preserve rngBsMAttribute(LBound(strBsMAttribute, 1) To UBound(strBsMAttribute, 1))
 #           strBsMAttribute(35) = "Temp11_Auswahlfeld"
-            bsm_attributes = bsm_attributes.remove(OutputBSMAttribute.Temp11SelectionField)
+            bsm_attributes.remove(OutputBSMAttribute.Temp11SelectionField)
 #           Set rngBsMAttribute(35) = wksBsM.Cells(lngDatensatz, intZielspalte + 35)    ' => nachträglich an richtige Stelle verschieben?
 #       End If
-        bsm_output_data = {name : [] for name in bsm_attributes}
+        bsm_output_data:dict[str,list[str]] = {name : [] for name in bsm_attributes}
 #       
         # Header format is implemented in Worksheet.append method
 #       'Tabellenkopf anlegen
@@ -1724,80 +1729,12 @@ class ATEStatus:
 #               rngBsMAttribute(34).Offset(lngDatensatz, 0).Value = CStr(Year(Date) & "/" & WorksheetFunction.WeekNum(Date, 2))
 #           End If
             row_output[OutputBSMAttribute.KWDataEvaluation] = self.date_signature
-#           'Vorgänger ID
-#           If blnAVWVorgaengerIDsVerwenden Then
-            if self.use_predecessor_ids:
-#               rngBsMAttribute(0).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWVorgaengerID
-                row_output[OutputBSMAttribute.RedirectedFrom] = bsm_dataset.avw_predecessor_id
-            #else:
             #   row_output[OutputBSMAttribute.RedirectedFrom] = ''
 #           End If
-#           'Ausgabe ID
-#           rngBsMAttribute(1).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWID
-            row_output[OutputBSMAttribute.ID] = bsm_dataset.avw_id
-#           'Ausgabe Dokument-ID
-#           rngBsMAttribute(2).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWDokumentID
-            row_output[OutputBSMAttribute.DocumentID] = bsm_dataset.avw_dokument_id
-#           'Ausgabe BsM-Relevanz
-#           rngBsMAttribute(3).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.BSMRelevanz
-            row_output[OutputBSMAttribute.BSMRelevance] = bsm_dataset.bsm_relevanz
-#           'Ausgabe BSM-SaFuSi
-#           rngBsMAttribute(4).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMSaFuSi
-            row_output[OutputBSMAttribute.BSMSaFuSiAssesment] = bsm_dataset.avw_bsm_safusi
-#           'Ausgabe BSM-ZZ
-#           rngBsMAttribute(5).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMZZ
-            row_output[OutputBSMAttribute.BSMZZAssesment] = bsm_dataset.avw_bsm_zz
-#           'Ausgabe BSM-ED
-#           rngBsMAttribute(6).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMED
-            row_output[OutputBSMAttribute.BSMEDAssesment] = bsm_dataset.avw_bsm_ed
-#           'Ausgabe BSM-FFF
-#           rngBsMAttribute(7).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMFFF
-            row_output[OutputBSMAttribute.BSMFFFAssesment] = bsm_dataset.avw_bsm_fff
-#           'Ausgabe BSM-O
-#           rngBsMAttribute(8).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMO
-            row_output[OutputBSMAttribute.BSMOAssesment] = bsm_dataset.avw_bsm_o
-#           'Ausgabe BSM-Se
-#           rngBsMAttribute(9).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMSe
-            row_output[OutputBSMAttribute.BSMSeAssesment] = bsm_dataset.avw_bsm_se
-#           'Ausgabe ASIL
-#           rngBsMAttribute(10).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWASIL
-            row_output[OutputBSMAttribute.ASIL] = bsm_dataset.avw_asil
-#           'Ausgabe Feature
-#           rngBsMAttribute(11).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWFeature
-            row_output[OutputBSMAttribute.Feature] = bsm_dataset.avw_feature
-#           'Ausgabe Reifegrad
-#           rngBsMAttribute(12).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWReifegrad
-            row_output[OutputBSMAttribute.MaturityLevel] = bsm_dataset.avw_reifegrad
-#           'Ausgabe Umsetzer
-#           rngBsMAttribute(13).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWUmsetzer
-            row_output[OutputBSMAttribute.Implementer] = bsm_dataset.avw_implementer
-#           'Ausgabe Status
-#           rngBsMAttribute(14).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWStatus
-            row_output[OutputBSMAttribute.Status] = bsm_dataset.avw_status
-#           'Ausgabe MV
-#           rngBsMAttribute(20).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWMV
-            row_output[OutputBSMAttribute.MV] = bsm_dataset.avw_mv
-#           'Ausgabe Kategorie
-#           rngBsMAttribute(21).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWKategorie
-            row_output[OutputBSMAttribute.Category] = bsm_dataset.avw_kategorie
-#           'Ausgabe Dokumentenname
-#           rngBsMAttribute(22).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWDokumentName
-            row_output[OutputBSMAttribute.Document] = bsm_dataset.avw_dokument_name
-#           'Ausgabe #abgelehnt_nicht_testbar
-#           rngBsMAttribute(23).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWAbgelehntNichtTestbar
-            row_output[OutputBSMAttribute.RejectedNotTestable] = bsm_dataset.avw_abgelehnt_nicht_testbar
-#           'Ausgabe Zugeordnete I-Stufe
-#           rngBsMAttribute(24).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.IStufe
-            row_output[OutputBSMAttribute.AssignedILevel] = bsm_dataset.i_stufe
-#           'Ausgabe Cluster Testing
-#           rngBsMAttribute(29).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.ClusterTesting
-            row_output[OutputBSMAttribute.TestingCluster] = bsm_dataset.cluster_testing
+            bsm_dataset.requirement_data_to(row_output)
 #           'Ausgabe Projekt
 #           rngBsMAttribute(30).Offset(lngDatensatz, 0).Value = strProjekt
             row_output[OutputBSMAttribute.Project] = self.project
-#           'Ausgabe Anforderungsverantwortliche
-#           rngBsMAttribute(33).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWAnforderungsverantwortliche
-            row_output[OutputBSMAttribute.RequirementOwner] = bsm_dataset.avw_anforderungsverantwortliche
 #       
 #           'Rücksetzen der Variablen für TU-Abgleich
 #           ReDim intAbgleichTUs(LBound(strAbgleichTUs, 1) To UBound(strAbgleichTUs, 1))
@@ -1882,7 +1819,7 @@ class ATEStatus:
                         dblTDVKAnzahlUseCases = 1
 #               End If
 #               rngBsMAttribute(32).Offset(lngDatensatz, 0).Value = dblTDVKAnzahlUseCases
-                row_output[OutputBSMAttribute.TDVCEffortEstimation] = dblTDVKAnzahlUseCases
+                row_output[OutputBSMAttribute.TDVCEffortEstimation] = str(dblTDVKAnzahlUseCases)
 #              
 #               'Auswertung TD-AA
 #               If varErfassteBsMDatensatzItem.Verifikationskriterium.Item(1).Absicherungsauftraege.Count > 0 Then
@@ -2105,7 +2042,7 @@ class ATEStatus:
         yield self.output_status_TD()
 #   
 #   Private Sub AusgabeTDStatus(ByVal wbBsM As Workbook, ByRef wksTD As Worksheet, ByRef strTDAttribute() As String, ByRef rngTDAttribute() As Range, ByRef strDateinamen() As String, ByVal strProjekt As String)
-    def output_status_TD(self) -> tuple[dict[str,list[str]],str]:
+    def output_status_TD(self) -> tuple[dict[str,list[str]],str, FillDict]:
 #       Dim lngDatensatz As Long                        'Long-Variable für aktuell zu schreibenden Datensatz
 #       Dim Verifikationskriterium As Verifikationskriterium    'Verifikationskriterium
 #       Dim varErfassteTDAAItem As Variant              'Variant für Item aus den jeweiligen Absicherungsaufträgen
@@ -2210,7 +2147,7 @@ class ATEStatus:
 #           ReDim Preserve rngTDAttribute(LBound(strTDAttribute, 1) To UBound(strTDAttribute, 1))
 #           strTDAttribute(26) = "Temp11_Auswahlfeld (LAH)"
             #it should be at 13 column
-            td_attributes = td_attributes.remove(TDProjectAttribute.Temp11SelectionField)
+            td_attributes.remove(TDProjectAttribute.Temp11SelectionField)
             ####td_attributes.append(TDProjectAttribute.Temp11SelectionField)
 #           Set rngTDAttribute(26) = wksTD.Cells(1, 26)
 #       End If
@@ -2264,7 +2201,7 @@ class ATEStatus:
 #       Next i
 #       
         self.relevant_test_environments = KNOWN_TEST_ENVIRONMENTS[:RELEVANT_TOP]
-        td_output_data = {name: [] for name in td_attributes}
+        td_output_data:dict[str,list[str]] = {name: [] for name in td_attributes}
 
 #       'TD-Daten ausgeben
 #       lngDatensatz = 0
@@ -2273,7 +2210,7 @@ class ATEStatus:
 #       For Each Verifikationskriterium In verifikationKritList
         verification_criterion:Verificationskriterium
         for verification_criterion in self.verification_criteria.values():
-            row_data = {name:'' for name in td_attributes}
+            row_data:dict[str,str] = {name:'' for name in td_attributes}
 #           If Verifikationskriterium.AnforderungVorhanden = True Then
             if verification_criterion.requirement_present:
 #               'Zähler für Datensatz/Zeile

@@ -1,5 +1,5 @@
 
-PROJECTS:tuple[str] = (
+PROJECTS:tuple[str, ...] = (
     "empty",
     "MQB48W",
     "MQB37W PA",

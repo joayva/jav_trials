@@ -7,8 +7,8 @@ from xls_management.is_ole import is_ole
 from xls_management.xlsx.workbook import Workbook
 
 
-def test_is_ole_non_existing():
-    my_file = working_path / 'test/data/non_existing.xls'
+def test_is_ole_non_existing(tmp_path):
+    my_file = tmp_path / 'non_existing.xls'
     with pytest.raises(FileNotFoundError):
         assert is_ole(my_file) == f'{my_file} is ole'
 
@@ -16,8 +16,8 @@ def test_is_ole_empty_xlsx():
     my_file = working_path / 'test/data/Empty.xlsx'
     assert is_ole(my_file) == f'{my_file} is ole'
 
-def test_pandas_xlsxwriter():
-    example = working_path / 'test/data/example.xlsx'
+def test_pandas_xlsxwriter(tmp_path):
+    example = tmp_path / 'example.xlsx'
     import pandas as pd
 
     # example data
@@ -55,13 +55,13 @@ def test_pandas_xlsxwriter():
 
     assert is_ole(example) == f'{example} is ole'
 
-def test_pandas_write_with_crlf():
-
+def test_pandas_write_with_crlf(tmp_path):
+    target_path = tmp_path / 'prueba.xlsx'
     df2 = pd.DataFrame({'id': [1, 2], 'values': ['Test\r\nTest', 'pie\r\npie\r\npie']})
-    with pd.ExcelWriter('prueba.xlsx') as w:
+    with pd.ExcelWriter(target_path) as w:
         df2.to_excel(w,index=False, engine='openpyxl', sheet_name='One',inf_rep='replace')
         # each \r value is stored as _x000D_
-    with pd.ExcelFile('prueba.xlsx') as xls:
+    with pd.ExcelFile(target_path) as xls:
         df = pd.read_excel(xls, sheet_name='One')
         #fix: each value _x000D_ is replaced by \r
         df = df.replace(to_replace='_x000D_', value='\r', regex=True)

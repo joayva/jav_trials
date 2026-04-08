@@ -4,7 +4,7 @@ from xls_management.ate.data_de import \
 
 
 class TestEnvironmentEvaluation:
-    def __init__(self):
+    def __init__(self)-> None:
 #       Dim intAuswertungTUs() As Integer               'Integer-Array für die Ergebnisse des Tu-Abgleichs
         self.value = 0
 #       Dim strAuswertungTUs() As String                'String-Array für die Ergebnisse des Tu-Abgleichs
@@ -24,7 +24,7 @@ class TestEnvironmentEvaluations:
     def __init__(
             self,
             comparison_count:list[int],
-            test_environment_types:list[str] = KNOWN_TEST_ENVIRONMENTS[:RELEVANT_TOP],
+            test_environment_types:list[str]|tuple[str, ...] = KNOWN_TEST_ENVIRONMENTS[:RELEVANT_TOP],
         ):
         self.evaluations:dict[int,TestEnvironmentEvaluation] = { 
             i:TestEnvironmentEvaluation() for i in TestEnvironmentEvaluations.indexes

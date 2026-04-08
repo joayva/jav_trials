@@ -8,7 +8,7 @@ from xls_management import HOMEPATH, ROOTPATH
 class ATEConfig():
     config_file = ROOTPATH / "config.yml"
     def __init__(self):
-        self.config:dict|None = None
+        self.config:dict = {}
         if(ATEConfig.config_file.exists()):
             self.load_config_file()
         else:
@@ -16,14 +16,18 @@ class ATEConfig():
 
     def load_config_file(self) -> None:
         with open(ATEConfig.config_file, 'r', encoding='utf8') as file:
-            self.config = yaml.safe_load(file)
+            config = yaml.safe_load(file)
+            if config is None:
+                config = {}
+            self.config = config
     
     def config_from(self, file_path:str|Path) ->None:
         config_data:dict = {}
         with open(file_path, 'r', encoding='utf8') as file:
             config_data = yaml.safe_load(file)
         for key,value in config_data.items():
-            self.config[key] = value
+            _key:str = f'{key}'
+            self.config[_key] = value
 
     def set_default_config_file(self) -> None:
         self.config = {}

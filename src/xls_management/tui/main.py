@@ -3,7 +3,6 @@ from textual.app import App, ComposeResult
 from textual.widgets import DataTable, Footer, Header
 
 from xls_management.ate import PROJECTS
-from xls_management.com.workbook import Workbook
 
 
 class TableApp(App):

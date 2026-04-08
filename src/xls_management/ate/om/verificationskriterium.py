@@ -63,42 +63,42 @@ class Verificationskriterium:
         self.test_cases: dict[str, "TestCase"] = {}
 #       'Sammlung für I-Stufen vorbereiten
 #       Set verifikationKrit.anf_IStufen = New Collection
-        self.requirement_i_level = []  
+        self.requirement_i_level:list[str] = []  
 #       'Sammlung für Umsetzer vorbereiten
 #       Set verifikationKrit.anf_Umsetzer = New Collection
-        self.requirement_implementer = []
+        self.requirement_implementer:list[str] = []
 #       'Sammlung für BsM-Relevanz vorbereiten
 #       Set verifikationKrit.anf_BsMRelevanz = New Collection
-        self.requirement_bsm_relevance = []
+        self.requirement_bsm_relevance:list[str] = []
 #       'Sammlung für ASIL vorbereiten
 #       Set verifikationKrit.anf_ASIL = New Collection
-        self.requirement_asil = []
+        self.requirement_asil:list[str] = []
 #       'Sammlung für Feature vorbereiten
 #       Set verifikationKrit.anf_Feature = New Collection
-        self.requirement_feature = []
+        self.requirement_feature:list[str] = []
 #       'Sammlung für Reifegrad vorbereiten
 #       Set verifikationKrit.anf_Reifegrad = New Collection
-        self.requirement_maturity_level = []
+        self.requirement_maturity_level:list[str] = []
 #       'Sammlung für Modulverantwortliche vorbereiten
 #       Set verifikationKrit.anf_MV = New Collection
-        self.requirement_mv = []
+        self.requirement_mv:list[str] = []
 #       'Sammlung für LAH-ID vorbereiten
 #       Set verifikationKrit.anf_LAHID = New Collection
-        self.requirement_lah_id = []
+        self.requirement_lah_id:list[str] = []
 #       'Sammlung für LAH-Namen vorbereiten
 #       Set verifikationKrit.anf_LAHNamen = New Collection
-        self.requirement_lah_name = []
+        self.requirement_lah_name:list[str] = []
 #       'Sammlung für Cluster Testing vorbereiten
 #       Set verifikationKrit.anf_ClusterTesting = New Collection
-        self.requirement_cluster_testing = []
+        self.requirement_cluster_testing:list[str] = []
 #       'Sammlung für Anforderungsverantwortliche vorbereiten
 #       Set verifikationKrit.anf_Anforderungsverantwortliche = New Collection
-        self.requirement_owner = []
+        self.requirement_owner:list[str] = []
 #       'Sammlung für Temp11_Auswahlfeld vorbereiten
 #       Set verifikationKrit.anf_Temp11_Auswahlfeld = New Collection
-        self.requirement_temp11_selection_field = []
+        self.requirement_temp11_selection_field:list[str] = []
 #       verifikationKrit.VK_temp1Text = rngTDVKAttribute(4).Offset(lngZeile, 0).Value
-        self.temp1_text = columns[VC.Temp1Text][row]
+        self.temp1_text:str = columns[VC.Temp1Text][row]
 #       'Aktion einlesen
 #       verifikationKrit.VK_Aktion = rngTDVKAttribute(5).Offset(lngZeile, 0).Value
         self.aktion = str(columns[VC.Action][row])

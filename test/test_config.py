@@ -17,10 +17,10 @@ def test_config_create(monkeypatch):
         'vw/data/ATE-Status_Berichtsversion.xlsx',
     )
 
-def test_config_open(monkeypatch):
-    clean("test/data/config.yml")
-    assert (working_path / "test/data/config.yml").exists() is False
-    monkeypatch.setattr("xls_management.ROOTPATH",working_path / "test/data")
+def test_config_open(monkeypatch, tmp_path):
+    target_path = tmp_path / "config.yml"
+    assert target_path.exists() is False
+    monkeypatch.setattr("xls_management.ROOTPATH", tmp_path)
     from xls_management.config import ATEConfig
     ate:ATEConfig = ATEConfig()
     assert 'workbook_path_BsM' in ate.config.keys()
@@ -31,7 +31,7 @@ def test_config_open(monkeypatch):
     target:str|None = ate.get('workbook_path_BsM')
     assert target is not None
     del(ate)
-    assert (working_path / "test/data/config.yml").exists() is True
+    assert (tmp_path / "config.yml").exists() is True
     ate = ATEConfig()
     assert 'workbook_path_BsM' in ate.config.keys()
     assert ate.config['workbook_path_BsM'] == str(

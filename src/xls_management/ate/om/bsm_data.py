@@ -3,6 +3,7 @@ import re
 import pandas as pd
 
 from xls_management.ate.data_de import (AVWProjectAttribute,
+                                        OutputBSMAttribute,
                                         RequirementAttribute)
 from xls_management.ate.om.fru_timming import FRUTiming
 from xls_management.ate.om.test_case import TestCase
@@ -263,5 +264,71 @@ class BSMData:
 #       
 #       'Innere Schleife beenden, da es zu jeder Anforderung nur ein Verifikationskriterium gibt
 
-    def same_id(self, requirement_id:id) -> bool:
+    def same_id(self, requirement_id:str) -> bool:
         return requirement_id == self.avw_id
+
+    def requirement_data_to(self, row_output:dict[str,str]):
+#       'Ausgabe ID
+#       rngBsMAttribute(1).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWID
+        row_output[OutputBSMAttribute.ID] = self.avw_id
+#       'Ausgabe Dokument-ID
+#       rngBsMAttribute(2).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWDokumentID
+        row_output[OutputBSMAttribute.DocumentID] = self.avw_dokument_id
+#       'Ausgabe BsM-Relevanz
+#       rngBsMAttribute(3).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.BSMRelevanz
+        row_output[OutputBSMAttribute.BSMRelevance] = self.bsm_relevanz
+#       'Ausgabe BSM-SaFuSi
+#       rngBsMAttribute(4).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMSaFuSi
+        row_output[OutputBSMAttribute.BSMSaFuSiAssesment] = self.avw_bsm_safusi
+#       'Ausgabe BSM-ZZ
+#       rngBsMAttribute(5).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMZZ
+        row_output[OutputBSMAttribute.BSMZZAssesment] = self.avw_bsm_zz
+#       'Ausgabe BSM-ED
+#       rngBsMAttribute(6).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMED
+        row_output[OutputBSMAttribute.BSMEDAssesment] = self.avw_bsm_ed
+#       'Ausgabe BSM-FFF
+#       rngBsMAttribute(7).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMFFF
+        row_output[OutputBSMAttribute.BSMFFFAssesment] = self.avw_bsm_fff
+#       'Ausgabe BSM-O
+#       rngBsMAttribute(8).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMO
+        row_output[OutputBSMAttribute.BSMOAssesment] = self.avw_bsm_o
+#       'Ausgabe BSM-Se
+#       rngBsMAttribute(9).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWBsMSe
+        row_output[OutputBSMAttribute.BSMSeAssesment] = self.avw_bsm_se
+#       'Ausgabe ASIL
+#       rngBsMAttribute(10).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWASIL
+        row_output[OutputBSMAttribute.ASIL] = self.avw_asil
+#       'Ausgabe Feature
+#       rngBsMAttribute(11).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWFeature
+        row_output[OutputBSMAttribute.Feature] = self.avw_feature
+#       'Ausgabe Reifegrad
+#       rngBsMAttribute(12).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWReifegrad
+        row_output[OutputBSMAttribute.MaturityLevel] = self.avw_reifegrad
+#       'Ausgabe Umsetzer
+#       rngBsMAttribute(13).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWUmsetzer
+        row_output[OutputBSMAttribute.Implementer] = self.avw_implementer
+#       'Ausgabe Status
+#       rngBsMAttribute(14).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWStatus
+        row_output[OutputBSMAttribute.Status] = self.avw_status
+#       'Ausgabe MV
+#       rngBsMAttribute(20).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWMV
+        row_output[OutputBSMAttribute.MV] = self.avw_mv
+#       'Ausgabe Kategorie
+#       rngBsMAttribute(21).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWKategorie
+        row_output[OutputBSMAttribute.Category] = self.avw_kategorie
+#       'Ausgabe Dokumentenname
+#       rngBsMAttribute(22).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWDokumentName
+        row_output[OutputBSMAttribute.Document] = self.avw_dokument_name
+#       'Ausgabe #abgelehnt_nicht_testbar
+#       rngBsMAttribute(23).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWAbgelehntNichtTestbar
+        row_output[OutputBSMAttribute.RejectedNotTestable] = self.avw_abgelehnt_nicht_testbar
+        
+#       'Ausgabe Zugeordnete I-Stufe
+#       rngBsMAttribute(24).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.IStufe
+        row_output[OutputBSMAttribute.AssignedILevel] = self.i_stufe
+#       'Ausgabe Cluster Testing
+#       rngBsMAttribute(29).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.ClusterTesting
+        row_output[OutputBSMAttribute.TestingCluster] = self.cluster_testing
+#       'Ausgabe Anforderungsverantwortliche
+#       rngBsMAttribute(33).Offset(lngDatensatz, 0).Value = varErfassteBsMDatensatzItem.AVWAnforderungsverantwortliche
+        row_output[OutputBSMAttribute.RequirementOwner] = self.avw_anforderungsverantwortliche

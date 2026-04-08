@@ -20,11 +20,11 @@ class ProjectDBInfo(DBInfo):
         :param self: ProjectDBInfo object reference
         :param args: Next arguments are expected         
                         db_info:DBInfo ,(optional) DBInfo object; attributes=db_info.attributes
-                        attributes: tuple[str], (optional) should be provided if no db_info object
+                        attributes: tuple[str, ...], (optional) should be provided if no db_info object
                         project:str,
-                        project_attributes: tuple[str]= (),
+                        project_attributes: tuple[str, ...]= (),
         """
-        attributes:tuple[str]
+        attributes:tuple[str, ...]
         if 'db_info' in args.keys():
             attributes=args['db_info'].attributes
         else:
@@ -34,7 +34,7 @@ class ProjectDBInfo(DBInfo):
         assert 'project' in args.keys(),"project param should be provided"
         self.project:str = args['project']
         assert 'project_attributes' in args.keys(),"project_attributes param should be provided"
-        self.project_attributes:tuple[str] = args['project_attributes']
+        self.project_attributes:tuple[str, ...] = args['project_attributes']
 
     
 #   Public Function EinlesenDatei_Projektspezifisch(ByVal strTitel As String, ByRef strAttribute() As String, ByRef rngAttribute() As Range, ByRef wbImport As Workbook, ByRef wksImport As Worksheet, ByRef strFehler As String, ByRef strDateinamen As String, _

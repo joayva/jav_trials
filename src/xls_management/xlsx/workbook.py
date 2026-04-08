@@ -1,7 +1,7 @@
 import csv
 import os
 from pathlib import Path
-from typing import Generator
+from typing import Any, Generator
 
 import pandas as pd
 from openpyxl.styles import Alignment, Font, PatternFill
@@ -47,16 +47,22 @@ class Workbook:
             df.to_excel(
                 writer,
                 sheet_name=name,
+                na_rep='',
                 index=False,
                 freeze_panes=(1,3),
                 engine=self.engine,
                 autofilter=True,
-                na_rep='',
             )
             row_len = len(df)
             worksheet = writer.sheets[name]
-            header_fill:PatternFill = PatternFill(**(self.config['header_style']['fill']))
-            header_font:Font = Font(**(self.config['header_style']['font']))
+            fill_args:dict[str,Any] = {}
+            if self.config and 'header_style' in self.config.keys() and 'fill' in self.config['header_style'].keys():
+                fill_args = self.config['header_style']['fill']
+            header_fill:PatternFill = PatternFill(**fill_args)
+            font_args:dict[str,Any] = {}
+            if self.config and 'header_style' in self.config.keys() and 'fill' in self.config['header_style'].keys():
+                font_args = self.config['header_style']['font']
+            header_font:Font = Font(**font_args)
             width_values = [35.0]*len(data_frame.columns)
             if 'worksheet_widths' in self.config.keys():
                 prefix= name[:-9]
@@ -82,7 +88,7 @@ class Workbook:
         except Exception as e:
             print(f"An error occurred: {e}")
 
-    def sheet_names(self) -> list[int|str]:
+    def sheet_names(self) -> list[int|str]|None:
         """
         Returns a list of sheet names from an Excel file.
         :return: List of sheet names or None if error 

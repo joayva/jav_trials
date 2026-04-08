@@ -14,7 +14,7 @@ class DBInfo:
         #sheet_name:str,              # ByRef wksImport As Worksheet
            # sheet_name and workbook is enougth to be able to load the data
         #columns:pd.DataFrame,        # ByRef rngAttribute() As Range
-        attributes: tuple[str]= (),  # ByRef strAttribute() As String
+        attributes: tuple[str, ...]= (),  # ByRef strAttribute() As String
     ):
         self.path = path
         self.workbook:Workbook|None = None
@@ -22,19 +22,6 @@ class DBInfo:
         self.attributes = attributes
         self.columns:pd.DataFrame|None = None
         self.error_msg:str = ""
-
-    def new_output(self, attributes:tuple[str], sheet_name:str)-> 'DBInfo':
-        output = DBInfo(
-            attributes=attributes,
-            columns= pd.DataFrame(
-                {name : [] for name in attributes},
-                dtype=str,
-            )
-        )
-        output.workbook = self.workbook
-        output.sheet_name = sheet_name
-        output.path = self.path
-        return output
 
     def str_attributes(self, separator:str=", "):
         return separator.join(self.attributes)

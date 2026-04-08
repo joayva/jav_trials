@@ -1,0 +1,1 @@
+# Mark the package as PEP 561 compatible so that type info is available to mypy

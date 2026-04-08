@@ -8,4 +8,4 @@ if platform.system():
     home_var='USERPROFILE'
 else:
     home_var='HOME'
-HOMEPATH = Path(os.getenv(home_var))
+HOMEPATH = Path(os.getenv(home_var,'.'))

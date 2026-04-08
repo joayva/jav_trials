@@ -121,10 +121,10 @@ def test_index():
     assert values.index('three') == 1
 
 def test_col_data_from():
-    from xls_management.utils.tools import col_widths_from
+    from xls_management.utils.tools import col_data_from
     values = [35.1, 10.2, 40.5]
     expected = [('A',35.1), ('B',10.2), ('C',40.5)]
     got = []
-    for v in col_widths_from(values):
+    for v in col_data_from(values):
         got.append(v)
     assert got == expected

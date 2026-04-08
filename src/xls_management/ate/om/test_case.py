@@ -67,7 +67,7 @@ class TestCase:
         #self.requirement_ids = list_from_comma_separated_str(requirement_ids)
 #       'Neue Sammlung für Anforderungs-IDs anlegen - Notwendig, wenn Liste der direkten Testfälle nicht übernommen wird
 #       Set testfall.TF_anfIDs = New Collection
-        self.requirement_ids = []
+        self.requirement_ids:list[str] = []
 #       
 #       'Alle über das Testdesign mit dem aktuellen Testfall verknüpften Anforderungs-IDs erfassen
 #       'ID des übergeordneten Verifikationsauftrags einlesen, Entfernung der zusätzlichen Zeichen "?" und "r"

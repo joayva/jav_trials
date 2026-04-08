@@ -10,7 +10,7 @@ from xls_management.ate import PROJECTS
 class ProjectChoice(App):
     CSS_PATH = "project_form.tcss"
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.project_name: str = ""
         self.evalue_master_id = False
@@ -46,7 +46,7 @@ class ProjectChoice(App):
 
     async def on_select_changed(self, event: Select.Changed) -> None:
         """Handle selection change event."""
-        self.project_name = event.value
+        self.project_name = f'{event.value}'
 
     async def on_radio_set_changed(self, event: RadioSet.Changed) -> None:
         """Handle radioset change event."""

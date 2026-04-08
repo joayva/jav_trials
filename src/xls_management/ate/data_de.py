@@ -140,7 +140,7 @@ class OutputBSMAttribute(StrEnum):
 #       intRelevantekTUs = 9
 
 RELEVANT_TEST_ENVIRONMENT_TOP = 9
-KNOWN_TEST_ENVIRONMENTS: tuple[str] = (
+KNOWN_TEST_ENVIRONMENTS: tuple[str, ...] = (
 #       strBekannteTUs(1) = "BRS-HiL_Laborplatz_automatisiert"
     'BRS-HiL_Laborplatz_automatisiert',
 #       strBekannteTUs(2) = "BRS-HiL_Basis-Funktion"

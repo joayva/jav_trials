@@ -8,11 +8,12 @@ from xls_management.xlsx.workbook import Workbook
 
 
 def test_compare_td_status_outputs():
+    suffix = '_013_2026'
     py_wb = Workbook(f"{HOMEPATH}\\vw\\data\\output.xlsx")
     vba_wb=Workbook(f"{HOMEPATH}\\vw\\data\\trial\\output_Status.xlsx")
     sheet_data = (
-        ('ATE_Status_013_2026','ID'),
-        ('TD_Status_013_2026','TD-VK'),
+        (f'ATE_Status{suffix}','ID'),
+        (f'TD_Status{suffix}','TD-VK'),
     )
     diff_wb = Workbook(f"{HOMEPATH}\\vw\\data\\diff_Output.xlsx")
     with diff_wb.writer() as w:
