@@ -3,7 +3,7 @@ from pathlib import Path
 
 import yaml
 
-from xls_management import ROOTPATH, WORKPATH
+from xls_management import WORKPATH
 
 
 class ATEConfig():

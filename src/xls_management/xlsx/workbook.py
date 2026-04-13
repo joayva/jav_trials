@@ -30,6 +30,8 @@ class Workbook:
         self.config = ate.config
 
     def writer(self):
+        if not self.file_path.parent.exists():
+            os.makedirs(self.file_path.parent, exist_ok=True)
         return pd.ExcelWriter(self.file_path, engine=self.engine)
     
     def reader(self):

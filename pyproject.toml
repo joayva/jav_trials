@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "xls_management"
-version = "1.0.0"
+version = "1.0.1"
 authors = [
   { name="José Ayude", email="jose.ayude@alten.es" },
 ]

@@ -8,7 +8,7 @@ from xls_management.utils.compare_output import compare_outputs
 from xls_management.xlsx.workbook import Workbook
 
 
-@parametrize_from_yaml(file_path=f'{WORKPATH}\\vw\\test_data\\in\\012_MEB21\\compare.yaml')
+@parametrize_from_yaml(file_path=f'{WORKPATH}\\vw\\test_data\\in\\compare.yaml')
 def test_compare_td_status_outputs(suffix:str, data_path:str, output_vba:str, output_py:str):
     data_root = data_path.format(workpath=WORKPATH)
     py_wb = Workbook(f"{data_root}\\{output_py}")

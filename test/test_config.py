@@ -2,13 +2,13 @@ import os
 import test
 from pathlib import Path
 from test import working_path
-
-from xls_management import WORKPATH
+from test.conftest import del_xls_management_imports
 
 
 def test_config_create(monkeypatch):
     clean("test/data/config.yml")
     monkeypatch.setattr("xls_management.ROOTPATH",working_path / "test/data")
+    from xls_management import WORKPATH
     from xls_management.config import ATEConfig
     ate = ATEConfig()
     assert 'workbook_path_BsM' in ate.config.keys()
@@ -18,9 +18,11 @@ def test_config_create(monkeypatch):
     )
 
 def test_config_open(monkeypatch, tmp_path):
-    target_path = tmp_path / "config.yml"
+    del_xls_management_imports()
+    target_path = tmp_path / ".xls/config.yml"
     assert target_path.exists() is False
-    monkeypatch.setattr("xls_management.ROOTPATH", tmp_path)
+    monkeypatch.setattr("xls_management.WORKPATH", tmp_path)
+    from xls_management import WORKPATH
     from xls_management.config import ATEConfig
     ate:ATEConfig = ATEConfig()
     assert 'workbook_path_BsM' in ate.config.keys()
@@ -31,7 +33,7 @@ def test_config_open(monkeypatch, tmp_path):
     target:str|None = ate.get('workbook_path_BsM')
     assert target is not None
     del(ate)
-    assert (tmp_path / "config.yml").exists() is True
+    assert target_path.exists() is True
     ate = ATEConfig()
     assert 'workbook_path_BsM' in ate.config.keys()
     assert ate.config['workbook_path_BsM'] == str(

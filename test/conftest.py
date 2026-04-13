@@ -1,8 +1,15 @@
 import json
+import sys
 
 import pytest
 import yaml
 
+
+def del_xls_management_imports():
+    """Assure fresh import removing current loaded imports"""
+    to_remove = [name for name in sys.modules if name.startswith("xls_management")]
+    for name in to_remove:
+        del sys.modules[name]
 
 def get_test_input(file_path:str, load_method) -> dict[str,any]:
     with open(file_path, "r", encoding='utf8') as f:

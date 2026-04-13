@@ -172,7 +172,11 @@ class ATEStatus:
 #       'Abfrage Projekt und Nutzung Master-Bereich
 #       BoxAuswahlProjekt.Caption = "ATE-Status " & strVersionMakro
 #       BoxAuswahlProjekt.Show
-        self.project, self.use_predecessor_ids = project_combo_box()
+        if 'project' in self.config.config.keys():
+            self.project = self.config.get('project','leer')
+            self.use_predecessor_ids = self.config.get('use_predecessor_ids', False)
+        else:           
+            self.project, self.use_predecessor_ids = project_combo_box()
         self.is_project_specific = self.project in ['MEB21', 'MQB48W']
 #       
 #       If boolAuswahlGetroffen Then
@@ -230,8 +234,10 @@ class ATEStatus:
 #               Call AusgabeTDStatus(wbBsM, wksTD, strTDAttribute, rngTDAttribute, strDateinamen, strProjekt)
 #               'Geöffnete Dateien schliessen
 #               Call SchliessenWb(wbBsM, wbAVW, wbAVWMaster, wbTDVK, wbTDAA, wbTF, wbFRUTiming)
-                if output_path is None:
-                    output_path = self.workbook_BsM.file_path.parent / "output.xlsx"
+                output_path = self.config.get(
+                    'output_path',
+                    self.workbook_BsM.file_path.parent / f"{self.project}_output.xlsx",
+                )
                 wb = Workbook(output_path)
                 with wb.writer() as writer:
                     for row_data_set, name, bg_colours in self.output_worksheets():
