@@ -1,7 +1,7 @@
 import json
-import yaml
 
 import pytest
+import yaml
 
 
 def get_test_input(file_path:str, load_method) -> dict[str,any]:

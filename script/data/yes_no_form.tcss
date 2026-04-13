@@ -1,0 +1,31 @@
+Screen {
+    align: center middle;
+}
+#combo-container {
+    border: solid blue;
+    background: yellow 50%;
+    align: center middle;
+}
+Horizontal {
+    align: center middle;
+    height: auto;
+}
+
+#buttons {
+    layout: horizontal;
+    border: solid blue;
+    align: center middle;
+}
+
+#choice {
+    layout: horizontal;
+}
+
+#ok {
+    margin: 0 0 0 0;
+}
+
+RadioSet {
+    layout: horizontal;
+    width: 50%;
+}

@@ -27,7 +27,7 @@ class DBInfo:
         return separator.join(self.attributes)
 
 #   Public Function EinlesenDatei(ByVal strTitel As String, ByRef strAttribute() As String, ByRef rngAttribute() As Range, ByRef wbImport As Workbook, ByRef wksImport As Worksheet, ByRef strFehler As String, ByRef strDateinamen As String) As Boolean
-    def einlesen_datei(self, titel:str, import_file_path:str='') -> bool:
+    def read_file(self, titel:str, import_file_path:str='') -> bool:
         """
         user chooses a workbook using a file picker widget
         True,"" is returned if each expected attribute is in one of the workbook sheets;
@@ -40,7 +40,7 @@ class DBInfo:
         if import_file_path == '':
             import_file_path = path_from_file_picker(
                 location=self.path,
-                title= f"{titel} auswählen"
+                title= f"{titel} should be chosen"
             )
         elif isinstance(import_file_path, str):
             import_file_path = Path(import_file_path)

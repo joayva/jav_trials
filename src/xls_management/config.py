@@ -1,12 +1,13 @@
+import os
 from pathlib import Path
 
 import yaml
 
-from xls_management import WORKPATH, ROOTPATH
+from xls_management import ROOTPATH, WORKPATH
 
 
 class ATEConfig():
-    config_file = ROOTPATH / "config.yml"
+    config_file = WORKPATH / ".xls/config.yml"
     def __init__(self):
         self.config:dict = {}
         if(ATEConfig.config_file.exists()):
@@ -119,6 +120,8 @@ class ATEConfig():
             ],
         }
         yaml_str = yaml.dump(self.config)
+        if not ATEConfig.config_file.parent.exists():
+            os.makedirs(ATEConfig.config_file.parent, exist_ok=True)
         with open(ATEConfig.config_file, 'w',encoding='utf8') as file:
             file.writelines(yaml_str)
     

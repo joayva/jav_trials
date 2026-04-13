@@ -62,7 +62,6 @@ class ATEStatus:
         self.date_suffix = f"{self.week_number:03d}_{today.year}"
 
         self.config=ATEConfig()
-        self.use_predecessor_ids = False
         self.project = ''
 #       'Klasse Verifikationskriterien mit Absicherungsaufträgen
 #       Public verifikationKritList As New Collection
@@ -81,7 +80,7 @@ class ATEStatus:
         self.predecessor_index_AVW:dict = {}
 #       'Flag für die Berücksichtigung von Vorgänger-IDs bei den AVW-Rohdaten
 #       Public blnAVWVorgaengerIDsVerwenden As Boolean
-        self.use_predecessor_ids:bool
+        self.use_predecessor_ids:bool = False
 #       'BsM_Status
 #       Dim wbBsM As Workbook                       'Workbook für BsM_Status
 #       Dim wksBsM As Worksheet                     'Worksheet für BsM_Status
@@ -397,7 +396,7 @@ class ATEStatus:
             )
 #           If EinlesenDatei_Projektspezifisch("Anforderungen Projekt " & strProjekt, strAVWAttribute, rngAVWAttribute, wbAVW, wksAVW, strFehlerAVW, strDateinamen(1), strProjekt, strAVWAttributeMEB21, rngAVWAttributeMEB21) Then
 #               blnImportAttribute(1) = True
-            self.import_attribute[0] = self.info_AVW is not None and self.info_AVW.einlesen_datei(
+            self.import_attribute[0] = self.info_AVW is not None and self.info_AVW.read_file(
                 f"Requirements Project {self.project}",
                 self.config.get('requirements_path', ''),
             )
@@ -427,13 +426,13 @@ class ATEStatus:
 #                   strFehlerGesamt = strFehlerGesamt & vbCrLf & vbCrLf & "Anforderungen können nicht eingelesen werden!" & vbCrLf & "(Benötigt: " & strProjekt & " - " & strAttributeAVW & ")"
 #               End If
 #               blnImportAttribute(1) = False
-                self.errors += self.info_AVW.get_errors('Anforderungen können nicht eingelesen werden!')
+                self.errors += self.info_AVW.get_errors('Requirements weren\'t able to be readen!')
 #           End If
 #       ElseIf EinlesenDatei("Anforderungen Projektbereich", strAVWAttribute, rngAVWAttribute, wbAVW, wksAVW, strFehlerAVW, strDateinamen(1)) Then
 #           ImportAttribute(1) = True
         else:
             #No project specific importation
-            self.import_attribute[0] = self.info_AVW.einlesen_datei(
+            self.import_attribute[0] = self.info_AVW.read_file(
                 "Requirements project report",
                 self.config.get('requirements_path',''),
             )
@@ -453,7 +452,7 @@ class ATEStatus:
 #           Else
 #               strFehlerGesamt = strFehlerGesamt & vbCrLf & vbCrLf & "Anforderungen können nicht eingelesen werden!" & vbCrLf & "(Benötigt: " & strAttributeAVW & ")"
 #           End If
-            self.errors += self.info_AVW.get_errors('Anforderungen können nicht eingelesen werden!')
+            self.errors += self.info_AVW.get_errors('Requirements weren\'t able to be readen!')
 #       End If
 #       
 #       If blnImportAttribute(1) Then
@@ -474,7 +473,7 @@ class ATEStatus:
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("Verifikationskriterien", strTDVKAttribute, rngTDVKAttribute, wbTDVK, wksTDVK, strFehlerTDVK, strDateinamen(2)) Then
 #               blnImportAttribute(2) = True
-            self.import_attribute[1] = self.info_TDVK.einlesen_datei(
+            self.import_attribute[1] = self.info_TDVK.read_file(
                 'Verification kriteria',
                 self.config.get('verification_criteria_path', ''),
             )
@@ -495,7 +494,7 @@ class ATEStatus:
 #               Else
 #                   strFehlerGesamt = strFehlerGesamt & vbCrLf & vbCrLf & "Verifikationskriterien können nicht eingelesen werden!" & vbCrLf & "(Benötigt: " & strAttributeTDVK & ")"
 #               End If
-                self.errors += self.info_TDVK.get_errors('Verifikationskriterien können nicht eingelesen werden!')
+                self.errors += self.info_TDVK.get_errors('Verification criteria weren\'t able to be readen!')
 #               blnImportAttribute(2) = False
 #           End If
 #       End If
@@ -518,7 +517,7 @@ class ATEStatus:
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("Absicherungsaufträge", strTDAAAttribute, rngTDAAAttribute, wbTDAA, wksTDAA, strFehlerTDAA, strDateinamen(3)) Then
 #               blnImportAttribute(3) = True
-            self.import_attribute[2] = self.info_TDAA.einlesen_datei(
+            self.import_attribute[2] = self.info_TDAA.read_file(
                 "Security orders",
                 self.config.get('security_orders_path', ''),
             )
@@ -539,7 +538,7 @@ class ATEStatus:
 #               Else
 #                   strFehlerGesamt = strFehlerGesamt & vbCrLf & vbCrLf & "Absicherungsaufträge können nicht eingelesen werden!" & vbCrLf & "(Benötigt: " & strAttributeTDAA & ")"
 #               End If
-                self.errors += self.info_TDAA.get_errors('Absicherungsaufträge können nicht eingelesen werden!')
+                self.errors += self.info_TDAA.get_errors('Security orders weren\'t able to be readen!')
 #               blnImportAttribute(3) = False
 #           End If
 #       End If
@@ -564,7 +563,7 @@ class ATEStatus:
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("Testfälle", strTFAttribute, rngTFAttribute, wbTF, wksTF, strFehlerTF, strDateinamen(4)) Then
 #               blnImportAttribute(4) = True
-            self.import_attribute[3] = self.info_TF.einlesen_datei(
+            self.import_attribute[3] = self.info_TF.read_file(
                 "Test cases",
                 self.config.get('test_cases_path', ''),
             )
@@ -585,7 +584,7 @@ class ATEStatus:
 #               Else
 #                   strFehlerGesamt = strFehlerGesamt & vbCrLf & vbCrLf & "Testfälle können nicht eingelesen werden!" & vbCrLf & "(Benötigt: " & strAttributeTF & ")"
 #               End If
-                self.errors += self.info_TF.get_errors("Testfälle können nicht eingelesen werden!")
+                self.errors += self.info_TF.get_errors("Test cases weren\'t able to be readen!")
 #               blnImportAttribute(4) = False
 #           End If
 #       End If
@@ -607,7 +606,7 @@ class ATEStatus:
 #           'Dateiauswahl und Zuordnung
 #           If EinlesenDatei("FRU-Timing", strFRUTimingAttribute, rngFRUTimingAttribute, wbFRUTiming, wksFRUTiming, strFehlerFRUTiming, strDateinamen(5)) Then
 #               blnImportAttribute(5) = True
-            self.import_attribute[4] = self.info_fru_timming.einlesen_datei(
+            self.import_attribute[4] = self.info_fru_timming.read_file(
                 "FRU-Timing",
                 self.config.get('timing_path', ''),
             )
@@ -652,7 +651,7 @@ class ATEStatus:
 #               'Dateiauswahl und Zuordnung
 #               If EinlesenDatei("Anforderungen Masterbereich", strAVWMasterAttribute, rngAVWMasterAttribute, wbAVWMaster, wksAVWMaster, strFehlerAVWMaster, strDateinamen(6)) Then
 #                   blnImportAttribute(6) = True
-                self.import_attribute[5] = self.info_AVW_master.einlesen_datei(
+                self.import_attribute[5] = self.info_AVW_master.read_file(
                     "Anforderungen Masterbereich",
                     self.config.get('requirements_mb_path', ''),
                 )
@@ -673,7 +672,7 @@ class ATEStatus:
 #                   Else
 #                       strFehlerGesamt = strFehlerGesamt & vbCrLf & vbCrLf & "Anforderungen aus dem Masterbereich können nicht eingelesen werden!" & vbCrLf & "(Benötigt: " & strAttributeAVWMaster & ")"
 #                   End If
-                    self.errors += self.info_AVW_master.get_errors('Anforderungen aus dem Masterbereich können nicht eingelesen werden!')
+                    self.errors += self.info_AVW_master.get_errors('Requirements from Master report weren\'t able to be readen!')
 #                   blnImportAttribute(6) = False
 #               End If
 #           End If
@@ -835,7 +834,7 @@ class ATEStatus:
 #       Else
         else:
 #           MsgBox "Arbeitsblatt """ & strWKSBlacklist & """ ist nicht vorhanden!"
-            msgbox(f'Arbeitsblatt "{blacklist_name}" is nicht vorhanden!')
+            msgbox(f'Worksheet "{blacklist_name}" is not available!')
 #       End If
 #   End Sub
 #   

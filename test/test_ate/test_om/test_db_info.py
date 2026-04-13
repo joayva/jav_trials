@@ -11,7 +11,7 @@ def test_db_info_init():
     assert all_in_sequence(('License plate', 'Brand', 'Modell'),data.attributes)
     assert len(data.attributes) == 3
 
-def test_db_info_einlesen_datei():
+def test_db_info_read_file():
     import sys
     to_remove = [name for name in sys.modules if name.startswith("xls_management")]
     for name in to_remove:
@@ -21,7 +21,7 @@ def test_db_info_einlesen_datei():
         from xls_management.ate.om.db_info import DBInfo
         from xls_management.utils.tools import all_in_sequence
         data = DBInfo(attributes=('License plate', 'Brand', 'Modell'))
-        success = data.einlesen_datei("Test")
+        success = data.read_file("Test")
         assert success is True
         assert data.error_msg == ""
         assert all_in_sequence(data.attributes, data.columns.keys())
@@ -31,7 +31,7 @@ def test_db_info_einlesen_datei():
         assert data.columns['Brand'][2] == 'Audi'
         assert data.columns['Modell'][1] == 'Polo'
 
-def test_db_info_einlesen_datei_na():
+def test_db_info_read_file_na():
     import sys
     to_remove = [name for name in sys.modules if name.startswith("xls_management")]
     for name in to_remove:
@@ -41,7 +41,7 @@ def test_db_info_einlesen_datei_na():
         from xls_management.ate.om.db_info import DBInfo
         from xls_management.utils.tools import all_in_sequence
         data = DBInfo(attributes=('License plate', 'Brand', 'Modell'))
-        success = data.einlesen_datei("Test")
+        success = data.read_file("Test")
         assert success is True
         assert data.error_msg == ""
         assert all_in_sequence(data.attributes, data.columns.keys())
@@ -51,7 +51,7 @@ def test_db_info_einlesen_datei_na():
         assert data.columns['Brand'][2] == 'Audi'
         assert data.columns['Modell'][1] == 'n/a'
 
-def test_db_info_einlesen_datei_error():
+def test_db_info_read_file_error():
     import sys
     to_remove = [name for name in sys.modules if name.startswith("xls_management")]
     for name in to_remove:
@@ -61,7 +61,7 @@ def test_db_info_einlesen_datei_error():
         from xls_management.ate.om.db_info import DBInfo
         from xls_management.utils.tools import all_in_sequence
         data = DBInfo(attributes=('Name', 'License plate', 'Brand', 'Modell'))
-        success = data.einlesen_datei("Test")
+        success = data.read_file("Test")
         assert success is False
         assert data.error_msg != ""
         lines = data.error_msg.splitlines()

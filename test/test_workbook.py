@@ -8,8 +8,6 @@ from xls_management import WORKPATH
 from xls_management.xlsx.workbook import Workbook
 
 
-
-
 def test_workbook_sheets():
     file_path: Path = working_path / "test/data/example.xlsx"
     w: Workbook = Workbook(file_path)
