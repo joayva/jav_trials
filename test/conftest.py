@@ -1,11 +1,12 @@
 import json
+import yaml
 
 import pytest
 
 
-def get_test_input(file_path:str) -> dict[str,any]:
+def get_test_input(file_path:str, load_method) -> dict[str,any]:
     with open(file_path, "r", encoding='utf8') as f:
-        result = json.load(f)
+        result = load_method(f)
         inputsList = list([tuple((value for key,value in item.items() if key != "id")) for item in result["argvalues"]])
         ids = []
         if "ids" in result.keys():
@@ -22,6 +23,10 @@ def get_test_input(file_path:str) -> dict[str,any]:
             "argvalues": inputsList
         }
 
-def parametrize_from_file(file_path:str):
-    data = get_test_input(file_path)
+def parametrize_from_json(file_path:str):
+    data = get_test_input(file_path, json.load)
+    return pytest.mark.parametrize(**data)
+
+def parametrize_from_yaml(file_path:str):
+    data = get_test_input(file_path, yaml.safe_load)
     return pytest.mark.parametrize(**data)

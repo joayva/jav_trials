@@ -5,7 +5,7 @@ import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 from test import working_path
-from test.conftest import parametrize_from_file
+from test.conftest import parametrize_from_json
 from unittest.mock import patch
 
 from xls_management.xlsx.workbook import Workbook
@@ -31,11 +31,11 @@ def test_ATEStatus_perform_status():
     file_path = working_path / "../ATEStatus_perfom_status.txt"
     # side_effect list long enough for repeated calls
     file_list = [
-        working_path / '../in/MEB21_Statistik_Testing.xlsx',
-        working_path / '../in/Alle Verifikationskriterien.xlsx',
-        working_path / '../in/Alle Absicherungsaufträge.xlsx',
-        working_path / '../in/Alle Testfälle.xlsx',
-        working_path / '../in/MasterFeatureplan.xlsx',
+        working_path / '../in/012_MEB21/MEB21_Statistik_Testing.xlsx',
+        working_path / '../in/012_MEB21/Alle Verifikationskriterien.xlsx',
+        working_path / '../in/012_MEB21/Alle Absicherungsaufträge.xlsx',
+        working_path / '../in/012_MEB21/Alle Testfälle.xlsx',
+        working_path / '../in/012_MEB21/MasterFeatureplan.xlsx',
     #    working_path / '../in/trial_Master.xlsx',
     ]
     with file_path.open("w") as f:
@@ -47,7 +47,7 @@ def test_ATEStatus_perform_status():
             patch('xls_management.tui.yes_no_form.yes_no_msgbox', new=fake_msgbox_no),
             patch('xls_management.ate.tracking.date') as mock_date,
         ):
-            mock_date.today.return_value=datetime.date(2026, 3, 23)
+            mock_date.today.return_value=datetime.date(2026, 4, 10)
             fake_print(f'....{__name__}')
             # import after patches so module-level imports pick up the patched functions
             from xls_management.shell.ate import ATEStatus
@@ -82,7 +82,7 @@ def test_ATEStatus_perform_status_uc_config():
     # prepare a list of file paths to be returned by the file picker
     file_path = working_path / "../ATEStatus_perfom_status.txt"
     # side_effect list long enough for repeated calls
-    output_path = working_path / '../out/sc_output.xlsx'
+    output_path = working_path / '../out/012_MEB21/output_py.xlsx'
     if not output_path.parent.exists():
         os.makedirs(output_path.parent, exist_ok=True)
     with file_path.open("w") as f:
@@ -120,7 +120,7 @@ def test_ATEStatus_perform_status_uc_config():
                 assert len(ws) == 10
         sys.stdout = old_stdout
 
-@parametrize_from_file("../test_data/in/status.json")
+@parametrize_from_json("../test_data/in/status.json")
 def test_ATEStatus_perform_status_req_id(file_list, output_path, project):
     """
     Testfalle in py should be the same in ATE_Status worksheet comparing to VBA execution output

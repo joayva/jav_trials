@@ -2,7 +2,7 @@ from pathlib import Path
 
 import yaml
 
-from xls_management import HOMEPATH, ROOTPATH
+from xls_management import WORKPATH, ROOTPATH
 
 
 class ATEConfig():
@@ -32,10 +32,10 @@ class ATEConfig():
     def set_default_config_file(self) -> None:
         self.config = {}
         self.config['workbook_path_BsM'] = str(
-            HOMEPATH / 'vw/data/ATE-Status_Berichtsversion.xlsx',
+            WORKPATH / 'vw/data/ATE-Status_Berichtsversion.xlsx',
         )
         self.config['default_path'] = str(
-            HOMEPATH / 'vw/in'
+            WORKPATH / 'vw/in'
         )
         self.config['requirements_path'] = ''
         self.config['verification_criteria_path'] = ''

@@ -3,7 +3,7 @@ import test
 from pathlib import Path
 from test import working_path
 
-from xls_management import HOMEPATH
+from xls_management import WORKPATH
 
 
 def test_config_create(monkeypatch):
@@ -13,7 +13,7 @@ def test_config_create(monkeypatch):
     ate = ATEConfig()
     assert 'workbook_path_BsM' in ate.config.keys()
     assert ate.config['workbook_path_BsM'] == str(
-        HOMEPATH /
+        WORKPATH /
         'vw/data/ATE-Status_Berichtsversion.xlsx',
     )
 
@@ -25,7 +25,7 @@ def test_config_open(monkeypatch, tmp_path):
     ate:ATEConfig = ATEConfig()
     assert 'workbook_path_BsM' in ate.config.keys()
     assert ate.config['workbook_path_BsM'] == str(
-        HOMEPATH /
+        WORKPATH /
         'vw/data/ATE-Status_Berichtsversion.xlsx',
     )
     target:str|None = ate.get('workbook_path_BsM')
@@ -35,7 +35,7 @@ def test_config_open(monkeypatch, tmp_path):
     ate = ATEConfig()
     assert 'workbook_path_BsM' in ate.config.keys()
     assert ate.config['workbook_path_BsM'] == str(
-        HOMEPATH /
+        WORKPATH /
         'vw/data/ATE-Status_Berichtsversion.xlsx',
     )
     target:str|None = ate.get('workbook_path_BsM')

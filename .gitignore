@@ -5,3 +5,5 @@ __pycache__
 ~$*
 *.bak
 *.yml
+script/build
+script/*.spec

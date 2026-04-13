@@ -9,3 +9,4 @@ if platform.system():
 else:
     home_var='HOME'
 HOMEPATH = Path(os.getenv(home_var,'.'))
+WORKPATH = Path(os.getenv('OneDrive', HOMEPATH))
