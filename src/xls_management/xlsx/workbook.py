@@ -158,10 +158,11 @@ class Workbook:
             replacement:dict[str,str] = {r'_x000D_\n':r'\n', r'_x000D_':r'\r'},
         ) -> pd.DataFrame|None:
         """
-        Convert an Excel worksheet to CSV.
+        Loads dataframe from given worksheet name
 
-        :param csv_path: Path to save the output CSV file
+        :param skiprows: Rows to be skipped
         :param sheet_name: Sheet name or index (default=0 for first sheet)
+        :param replacemnt: dict with replacements
         """
         df:pd.DataFrame|None = None
         try:
