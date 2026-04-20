@@ -1,17 +1,12 @@
-import pandas as pd
-import pytest
 from pathlib import Path
 from test.conftest import parametrize_from_yaml
 
 import pandas as pd
+import pytest
 
 from xls_management import WORKPATH
-from xls_management.utils.compare_output import (
-    SHEET_NAME,
-    load_sheet,
-    normalize,
-    compare_outputs,
-)
+from xls_management.utils.compare_output import (SHEET_NAME, compare_outputs,
+                                                 load_sheet, normalize)
 from xls_management.xlsx.workbook import Workbook
 
 
@@ -37,20 +32,16 @@ def test_compare_td_status_outputs(suffix:str, data_path:str, output_vba:str, ou
     # differences should be 0
     assert len(diff_messages) == 0, '\n'.join(diff_messages)
 
-
-
 def test_normalize_treats_empty_values_as_equivalent():
     series = pd.Series([None, float("nan"), "nan", "none", "<na>", "", "a\r\nb", "c\r", "_x000D_", "ok"])
     normalized = normalize(series)
     assert normalized.tolist() == ["", "", "", "", "", "", "a\nb", "c\n", "", "ok"]
-
 
 def test_compare_outputs_returns_empty_for_equal_dataframes():
     df_vba = pd.DataFrame({"ID": [1, 2], "A": ["x", "y"], "B": [10, 20]})
     df_py = pd.DataFrame({"ID": [1, 2], "A": ["x", "y"], "B": [10, 20]})
     diff = compare_outputs(df_vba, df_py, key="ID")
     assert diff.empty
-
 
 def test_compare_outputs_ignores_key_column_and_reports_differences():
     df_vba = pd.DataFrame({"ID": [1, 2], "A": ["x", "z"], "B": [10, 21]})
@@ -63,13 +54,11 @@ def test_compare_outputs_ignores_key_column_and_reports_differences():
     assert diff["VBA"].tolist() == ["z", "21"]
     assert diff["Python"].tolist() == ["y", "20"]
 
-
 def test_compare_outputs_normalizes_numeric_strings_and_boolean_strings():
     df_vba = pd.DataFrame({"ID": [1], "A": [1], "B": ["True"], "C": [None]})
     df_py = pd.DataFrame({"ID": [1], "A": ["1"], "B": ["True"], "C": [""]})
     diff = compare_outputs(df_vba, df_py, key="ID")
     assert diff.empty
-
 
 def test_compare_outputs_uses_row_index_when_key_column_is_missing():
     df_vba = pd.DataFrame({"A": ["x"], "B": ["y"]})
@@ -83,7 +72,6 @@ def test_compare_outputs_uses_row_index_when_key_column_is_missing():
     assert diff.iloc[0]["VBA"] == "y"
     assert diff.iloc[0]["Python"] == "z"
 
-
 def test_load_sheet_reads_excel_file(tmp_path):
     excel_path = tmp_path / "compare_test.xlsx"
     expected = pd.DataFrame({"ID": [1, 2], "Name": ["alpha", "beta"]})
@@ -92,7 +80,7 @@ def test_load_sheet_reads_excel_file(tmp_path):
     loaded = load_sheet(excel_path, sheet_name=SHEET_NAME, header=0)
     pd.testing.assert_frame_equal(loaded, expected)
 
-
 def test_load_sheet_raises_when_file_missing():
     with pytest.raises(FileNotFoundError):
         load_sheet(Path("nonexistent.xlsx"))
+        

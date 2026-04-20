@@ -1,7 +1,8 @@
 from test.conftest import parametrize_from_yaml
 
 from xls_management import WORKPATH
-from xls_management.utils.color import Color, RESET, ansi_color
+from xls_management.utils.color import RESET, Color, ansi_color
+
 
 def test_color():
     assert Color.RED == "\x1b[91m"

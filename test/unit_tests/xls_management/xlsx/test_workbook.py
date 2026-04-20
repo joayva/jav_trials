@@ -1,10 +1,9 @@
-import pytest
 from pathlib import Path
 from shutil import copy
-
 from test import working_path
 
 import pandas as pd
+import pytest
 
 from xls_management import WORKPATH
 from xls_management.xlsx.workbook import Workbook

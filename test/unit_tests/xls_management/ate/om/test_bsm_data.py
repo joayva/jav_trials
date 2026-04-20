@@ -1,9 +1,8 @@
 import re
+from test import working_path
+from test.conftest import parametrize_from_yaml
 
 import pytest
-
-from test.conftest import parametrize_from_yaml
-from test import working_path
 
 from xls_management import WORKPATH
 from xls_management.ate.data_de import RequirementAttribute

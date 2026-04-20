@@ -1,6 +1,6 @@
 import sys
-from unittest.mock import patch
 from test import working_path
+from unittest.mock import patch
 
 
 def test_init(tmp_path) -> None:
@@ -9,7 +9,7 @@ def test_init(tmp_path) -> None:
         del sys.modules[name]
     fake_root = 'C:\\fake_root'
     with patch('os.getenv', return_value=fake_root):
-        from xls_management import WORKPATH, HOMEPATH, ROOTPATH
+        from xls_management import HOMEPATH, ROOTPATH, WORKPATH
         assert str(WORKPATH) == fake_root
         assert str(HOMEPATH) == fake_root
         assert (

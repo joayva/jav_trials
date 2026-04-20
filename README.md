@@ -15,7 +15,6 @@ High-level overview of the project layout with key files and directories.
 │  └─ xls_management/           # Main package implementing XLS utilities
 │     ├─ __init__.py            # Package initializer
 │     ├─ config.py              # Configuration helpers
-│     ├─ is_ole.py              # Detect OLE/legacy XLS files
 │     ├─ workbook.py            # Workbook read/write helpers
 │     ├─ ate/                   # ATE-related modules
 │     │  ├─ __init__.py
