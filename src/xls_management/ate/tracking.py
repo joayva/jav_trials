@@ -1,12 +1,9 @@
 import re
-from datetime import date, datetime
+from datetime import date
 from importlib.metadata import version
-from itertools import islice
 from pathlib import Path
-from typing import Any
 
 import pandas as pd
-from openpyxl.styles import PatternFill
 
 from xls_management.ate.data_de import KNOWN_TEST_ENVIRONMENTS
 from xls_management.ate.data_de import \
@@ -31,7 +28,9 @@ from xls_management.ate.om.vw_requirement_predecessor import \
     VWRequirementPredecessor
 from xls_management.ate.project import project_combo_box
 from xls_management.config import ATEConfig
+from xls_management.tui.file_picker import path_from_file_picker
 from xls_management.tui.msgbox import msgbox
+from xls_management.utils.dict_first import DictFirst
 from xls_management.utils.tools import lazy_join as unic_join
 from xls_management.utils.tools import list_from_comma_separated_str
 from xls_management.xlsx.colors import BG_GREEN, BG_RED, BG_YELLOW
@@ -65,19 +64,19 @@ class ATEStatus:
         self.project = ''
 #       'Klasse Verifikationskriterien mit Absicherungsaufträgen
 #       Public verifikationKritList As New Collection
-        self.verification_criteria:dict = {}
+        self.verification_criteria:DictFirst = DictFirst()
 #       'Klasse AVW-Rohdaten
 #       Public BsMDatenList As New Collection
-        self.bsm_datasets:dict = {}
+        self.bsm_datasets:DictFirst = DictFirst()
 #       'Klasse Testfälle
 #       Public testfallList As New Collection
-        self.test_cases:dict = {}
+        self.test_cases:DictFirst = DictFirst()
 #       'Klasse FRU_Timing
 #       Public FRUTimingList As New Collection
-        self.fru_timming_index:dict = {}
+        self.fru_timming_index:DictFirst = DictFirst()
 #       'Klasse AVWVorgaenger
 #       Public AVWVorgaengerList As New Collection
-        self.predecessor_index_AVW:dict = {}
+        self.predecessor_index_AVW:DictFirst = DictFirst()
 #       'Flag für die Berücksichtigung von Vorgänger-IDs bei den AVW-Rohdaten
 #       Public blnAVWVorgaengerIDsVerwenden As Boolean
         self.use_predecessor_ids:bool = False
@@ -140,6 +139,23 @@ class ATEStatus:
         self.workbook_BsM = Workbook(file_path=file_path_BsM)
         #self.output_workbook = Workbook(output_path)
     
+    
+    def config_to_file(self, config_path:Path):
+        ate_config = ATEConfig()
+        ate_config.config['project'], ate_config.config['use_predecessor_ids'] = project_combo_box()
+        workpath = '.'
+        for key, detail in (
+            ('requirements_path','Requirements'),
+            ('verification_criteria_path','Verification criteria'),
+            ('security_orders_path','Security orders'),
+            ('test_cases_path','Test cases'),
+            ('timing_path','FRU-Timing'),
+            ('requirements_mb_path','Master Requirements'),
+        ):
+            file_path = path_from_file_picker(location=workpath, title= f"{detail} file should be chosen")
+            ate_config.config[key] = str(file_path)
+            workpath = str(file_path.parent)
+        ate_config.save_to(Path(config_path))    
 
     def perform_status(self, output_path:Path|None=None):
 #       'Allgemein

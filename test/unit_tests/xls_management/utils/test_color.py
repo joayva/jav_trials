@@ -14,6 +14,6 @@ def test_color():
 
     assert RESET == "\x1b[0m"
 
-@parametrize_from_yaml(file_path=f'{WORKPATH}\\vw\\test_data\\in\\color.yml')
+@parametrize_from_yaml(file_path=f'{WORKPATH}\\vw_dev\\test_data\\in\\color.yml')
 def test_ansi_color(text:str, color_key:str, expected_result:str) -> None:
     assert ansi_color(text, Color[color_key]) == expected_result

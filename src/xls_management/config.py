@@ -33,10 +33,10 @@ class ATEConfig():
     def set_default_config_file(self) -> None:
         self.config = {}
         self.config['workbook_path_BsM'] = str(
-            WORKPATH / 'vw/data/ATE-Status_Berichtsversion.xlsx',
+            WORKPATH / 'vw_dev/data/ATE-Status_Berichtsversion.xlsx',
         )
         self.config['default_path'] = str(
-            WORKPATH / 'vw/in'
+            WORKPATH / 'vw_dev/in'
         )
         self.config['requirements_path'] = ''
         self.config['verification_criteria_path'] = ''
@@ -119,10 +119,13 @@ class ATEConfig():
                 7.08,
             ],
         }
+        self.save_to(ATEConfig.config_file)
+
+    def save_to(self, file_path:Path):
         yaml_str = yaml.dump(self.config)
-        if not ATEConfig.config_file.parent.exists():
-            os.makedirs(ATEConfig.config_file.parent, exist_ok=True)
-        with open(ATEConfig.config_file, 'w',encoding='utf8') as file:
+        if not file_path.parent.exists():
+            os.makedirs(file_path.parent, exist_ok=True)
+        with open(file_path, 'w',encoding='utf8') as file:
             file.writelines(yaml_str)
     
     def get(self, *args, **kvargs):

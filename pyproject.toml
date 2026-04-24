@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "xls_management"
-version = "1.0.1"
+version = "1.0.2"
 authors = [
   { name="José Ayude", email="jose.ayude@alten.es" },
 ]
@@ -34,7 +34,7 @@ dependencies = [
 [project.scripts]
 projects = "xls_management.tui.main:projects"
 project = "xls_management.ate.project:project_combo_box"
-ate_shell = "xls_management.shell.ate:launch_shell"
+xls_shell = "xls_management.shell.ate:launch_shell"
 
 [tool.setuptools.package-dir]
 xls_management = "src/xls_management"

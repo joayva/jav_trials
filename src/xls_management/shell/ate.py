@@ -1,5 +1,9 @@
+import argparse
 import cmd
+from importlib.metadata import version
 from pathlib import Path
+import shlex
+from typing import Any
 
 from xls_management.ate import PROJECTS
 from xls_management.ate.project import project_combo_box
@@ -20,6 +24,26 @@ class MyShell(cmd.Cmd):
         super().__init__()
         self.ate_status = ATEStatus()
 
+    def parse_config_args(self, args) -> Any:
+        # Prepare argument parsers for commands
+        config_parser = argparse.ArgumentParser(prog="config", add_help=True)
+        config_parser.add_argument("file", default="config.yml")
+        config_parser.add_argument(
+            '-c', 
+            '--create',
+            action='store_true',
+            default= False,
+            required= False,
+            help='config <file> --create',
+        )
+        return config_parser.parse_args(args)
+
+    def parse_status_args(self, args) -> Any:
+        # Prepare argument parsers for commands
+        status_parser = argparse.ArgumentParser(prog="config", add_help=True)
+        status_parser.add_argument("file", default="config.yml")
+        return status_parser.parse_args(args)
+
     # Example command
     def do_project(self, arg):
         """project <name>"""
@@ -28,8 +52,20 @@ class MyShell(cmd.Cmd):
 
     def do_status(self, arg):
         """status"""
-        assert self.ate_status.config is not None
-        self.ate_status.perform_status()
+        
+        if arg:
+            args = self.parse_config_args(arg.split())
+            print(args)
+            path = Path(args.file)
+            if path.exists():
+                self.ate_status.config.config_from(path)
+                assert self.ate_status.config is not None
+                self.ate_status.perform_status()
+            else:
+                print(f'{args.file} does not exist!')
+        else:
+            assert self.ate_status.config is not None
+            self.ate_status.perform_status()
 
     def do_choose(self, arg):
         """choose a project from a list using a combobox"""
@@ -45,16 +81,20 @@ class MyShell(cmd.Cmd):
 
     def do_config(self, arg):
         """choose a config file"""
-        evalue_master_id: bool
-        if not arg:
-            print(ansi_color('A file path is required', Color.RED))
-        else:
-            path = Path(arg)
-            if path.exists():
-                self.ate_status.config.config_from(arg)
+        if arg:
+            args = self.parse_config_args(arg.split())
+            print(args)
+            path = Path(args.file)
+            if args.create:
+                print(f"adding config file {args.file} ...")
+                self.ate_status.config_to_file(path)
+            elif  path.exists():
+                self.ate_status.config.config_from(path)
                 print(ansi_color(f'Updated config from {arg}', Color.GREEN))
             else:
                 print(ansi_color(f'{arg} file does not exist', Color.RED))
+        else:
+            print(ansi_color('A file path is required', Color.RED))
 
     def do_ask(self, arg):
         """choose a project from a list using a combobox"""
@@ -95,7 +135,13 @@ class MyShell(cmd.Cmd):
         return True
 
 def launch_shell():
-    MyShell().cmdloop()
+    parser = argparse.ArgumentParser(description='customized shell')
+    parser.add_argument('-v', '--version', action='store_true')
+    args = parser.parse_args()
+    if args.version:
+        print(version('xls_management'))
+    else:
+        MyShell().cmdloop()
 
 if __name__ == "__main__":
-    MyShell().cmdloop()
+    launch_shell()

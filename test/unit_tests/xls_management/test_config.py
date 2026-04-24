@@ -19,7 +19,7 @@ def test_config_create(monkeypatch, tmp_path):
     assert 'workbook_path_BsM' in ate.config.keys()
     assert ate.config['workbook_path_BsM'] == str(
         WORKPATH /
-        'vw/data/ATE-Status_Berichtsversion.xlsx',
+        'vw_dev/data/ATE-Status_Berichtsversion.xlsx',
     )
 
 def test_config_open(monkeypatch, tmp_path):
@@ -33,7 +33,7 @@ def test_config_open(monkeypatch, tmp_path):
     assert 'workbook_path_BsM' in ate.config.keys()
     assert ate.config['workbook_path_BsM'] == str(
         WORKPATH /
-        'vw/data/ATE-Status_Berichtsversion.xlsx',
+        'vw_dev/data/ATE-Status_Berichtsversion.xlsx',
     )
     target:str|None = ate.get('workbook_path_BsM')
     assert target is not None
@@ -43,7 +43,7 @@ def test_config_open(monkeypatch, tmp_path):
     assert 'workbook_path_BsM' in ate.config.keys()
     assert ate.config['workbook_path_BsM'] == str(
         WORKPATH /
-        'vw/data/ATE-Status_Berichtsversion.xlsx',
+        'vw_dev/data/ATE-Status_Berichtsversion.xlsx',
     )
     target:str|None = ate.get('workbook_path_BsM')
     assert target is not None
@@ -83,7 +83,7 @@ def test_config_properties(monkeypatch, tmp_path):
     assert isinstance(config.config_file, Path)
     assert isinstance(config.config, dict)
 
-@parametrize_from_yaml(f'{MYDATA}/vw/test_data/in/config_from.yml')
+@parametrize_from_yaml(f'{MYDATA}/vw_dev/test_data/in/config_from.yml')
 def test_config_config_from(given_config_path, expected, monkeypatch, tmp_path):
     del_xls_management_imports()
     monkeypatch.setattr('xls_management.ROOTPATH', tmp_path/ 'test/data')

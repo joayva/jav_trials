@@ -10,7 +10,7 @@ from xls_management.ate.om.bsm_data import BSMData
 from xls_management.xlsx.workbook import Workbook
 
 
-@parametrize_from_yaml(file_path = f'{WORKPATH}\\vw\\test_data\\in\\bsm_data.yml')
+@parametrize_from_yaml(file_path = f'{WORKPATH}\\vw_dev\\test_data\\in\\bsm_data.yml')
 def test___init__(input_data, expected) -> None:
     excel_path = input_data['excel_file'].format(work_path = WORKPATH)
     wb=Workbook(excel_path)

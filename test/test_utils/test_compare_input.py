@@ -8,7 +8,7 @@ from xls_management.utils.compare_input import column_diff
 from xls_management.xlsx.workbook import Workbook
 
 
-@parametrize_from_yaml(file_path=f'{WORKPATH}\\vw\\test_data\\in\\compare_input.yml')
+@parametrize_from_yaml(file_path=f'{WORKPATH}\\vw_dev\\test_data\\in\\compare_input.yml')
 def test_compare_imput(
     key_name:str,
     columns:list[str],

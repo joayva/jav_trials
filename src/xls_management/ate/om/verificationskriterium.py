@@ -11,6 +11,7 @@ if TYPE_CHECKING:
 from xls_management.ate.data_de import \
     TDVCAttribute as VC  # Verification Criterion
 from xls_management.ate.om.absicherungsauftraege import Absicherungsauftrag
+from xls_management.utils.dict_first import DictFirst
 from xls_management.utils.tools import list_from_comma_separated_str
 
 
@@ -57,10 +58,10 @@ class Verificationskriterium:
         self.status = columns[VC.Status][row]
 #       'Absicherungsaufträge für dieses Verifikationskriterium anlegen
 #       Set verifikationKrit.Absicherungsauftraege = New Collection
-        self.absicherungsauftraege:dict[str,Absicherungsauftrag] = {}
+        self.absicherungsauftraege:DictFirst[str,Absicherungsauftrag] = DictFirst()
 #       'Sammlung für Testfälle vorbereiten
 #       Set verifikationKrit.VK_Testfaelle = New Collection
-        self.test_cases: dict[str, "TestCase"] = {}
+        self.test_cases: DictFirst[str, "TestCase"] = DictFirst()
 #       'Sammlung für I-Stufen vorbereiten
 #       Set verifikationKrit.anf_IStufen = New Collection
         self.requirement_i_level:list[str] = []  
