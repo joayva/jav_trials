@@ -40,6 +40,7 @@ def test_ATEStatus_perform_status_config(
         sys.std_out = f
         with(
             patch('xls_management.tui.msgbox.msgbox', new=fake_print),
+            patch('xls_management.tui.yes_no_form.yes_no_msgbox', new=fake_msgbox_no),
             patch('xls_management.ate.tracking.date') as mock_date,
         ):
             mock_date.today.return_value=datetime.date(*date)

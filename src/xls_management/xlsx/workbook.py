@@ -29,6 +29,13 @@ class Workbook:
         ate = ATEConfig()
         self.config = ate.config
 
+    def assure_parent_exists(self):
+        """
+            If parent folder does not exist it is created
+        """
+        if not self.file_path.parent.exists():
+            os.makedirs(self.file_path.parent, exist_ok=True)
+
     def writer(self):
         if not self.file_path.parent.exists():
             os.makedirs(self.file_path.parent, exist_ok=True)

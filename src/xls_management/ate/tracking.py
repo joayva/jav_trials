@@ -452,7 +452,6 @@ class ATEStatus:
 #                   strAttributeAVW = strAttributeAVW & ", " & strAVWAttribute(i)
 #               End If
 #           Next i
-            strAttributeAVW = self.info_AVW.str_attributes()
 #           If strFehlerGesamt = "" Then
 #               strFehlerGesamt = "Anforderungen können nicht eingelesen werden!" & vbCrLf & "(Benötigt: " & strAttributeAVW & ")"
 #           Else
